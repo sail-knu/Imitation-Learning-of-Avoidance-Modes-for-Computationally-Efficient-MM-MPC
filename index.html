@@ -94,7 +94,6 @@ tbody tr.win{background:#eef5ee}
 tbody tr.win td{font-weight:600}
 td.l,th.l{text-align:left}
 .good{color:var(--good);font-weight:600}
-table.quality td,table.quality th{white-space:nowrap;font-size:14px}
 figure.narrow img{max-width:min(100%,720px)}
 
 footer{margin-top:52px;padding:24px 0 38px;border-top:1px solid var(--line);
@@ -208,22 +207,20 @@ Teacher: 16 solves. SideNet-MPC: 2 solves.
 <p class="sub">Teacher and SideNet-MPC take the same swerve. The two-candidate bearing rule collides at 31.5 s; the single-candidate rule arrives late (62.0 s).</p>
 </div>
 
-<h3>Monte Carlo — two densities, identical seeds within each clip</h3>
-<div class="vidgrid">
+<h3>Case studies — same scene, matching times</h3>
 <div class="vid best">
-<span class="tag">Density 100 — training density · seed 618</span>
-<video class="clip" muted playsinline preload="metadata" poster="static/poster_d100.png">
-<source src="static/video_d100.mp4" type="video/mp4">
+<span class="tag">Overtaking — Teacher · SideNet-MPC · Bearing 2 · Bearing 1</span>
+<video class="clip" muted playsinline preload="metadata" poster="static/poster_case_overtake.png">
+<source src="static/video_case_overtake.mp4" type="video/mp4">
 </video>
-<p class="sub">30 static + 70 dynamic obstacles. Teacher and SideNet-MPC both finish the 250 m corridor.</p>
+<p class="sub">Same overtaking scene, four controllers at matching times. Teacher (16 candidates) and SideNet-MPC (2) take the swerve; both bearing rules stay in the pass-through mode.</p>
 </div>
-<div class="vid best">
-<span class="tag">Density 140 — unseen at training · seed 675</span>
-<video class="clip" muted playsinline preload="metadata" poster="static/poster_d140.png">
-<source src="static/video_d140.mp4" type="video/mp4">
+<div class="vid best" style="margin-top:16px">
+<span class="tag">Monte Carlo seed 618 — Teacher · SideNet-MPC · Bearing, 2 cand.</span>
+<video class="clip" muted playsinline preload="metadata" poster="static/poster_case_mc.png">
+<source src="static/video_case_mc.mp4" type="video/mp4">
 </video>
-<p class="sub">Trained only at density 100. SideNet-MPC still completes under heavier traffic.</p>
-</div>
+<p class="sub">One Monte Carlo seed, three controllers. Teacher (16 candidates) and SideNet-MPC (2) thread the same traffic. An early wrong side drives the bearing rule into the wall at 56.5 s.</p>
 </div>
 <p class="playnote">Clips start automatically as they scroll into view.</p>
 </section>
@@ -260,8 +257,8 @@ The GNN carries that pairwise gap on its edges.
 </p>
 
 <figure>
-<img src="static/fig_gallery.png" alt="Coupling gallery: MLP is wrong in all four scenes, GNN matches the expert">
-<figcaption><b>Coupling gallery.</b> Adding a partner obstacle flips the expert side of the same lead obstacle. Four representative scenes span both flip directions and a range of pair gaps. The per-obstacle MLP is unchanged — and wrong — in all four; the GNN flips with the expert.</figcaption>
+<img src="static/fig_gallery.png" alt="Coupling gallery: same ego and b1, only b2 moves; MLP logit is identical, GNN tracks the expert">
+<figcaption><b>Coupling gallery.</b> Ego heading, speed, and the lead obstacle \(b_1\) are held fixed; only \(b_2\) moves. The per-obstacle MLP logit is identical in all four panels. It is right when \(b_2\) is on the free side and wrong when \(b_2\) blocks the intended gap; the GNN tracks the expert throughout.</figcaption>
 </figure>
 </section>
 
@@ -323,59 +320,37 @@ The GNN carries that pairwise gap on its edges.
 </div>
 
 <div class="tbl-scroll">
-<table class="quality">
-<caption>Quality over successful rollouts: cross-track error [m] / control effort <i>E<sub>u</sub></i> / input-rate effort <i>E</i><sub>&Delta;<i>u</i></sub>.</caption>
+<table>
+<caption>Mean wall-clock time per control period at the training density (uncontended, Intel Core Ultra 7 270K, five seeds). SideNet-MPC includes the network forward pass.</caption>
 <thead>
 <tr>
-<th class="l">Configuration</th>
-<th>100</th>
-<th>120</th>
-<th>130</th>
-<th>140</th>
+<th class="l">Controller</th>
+<th>OCPs</th>
+<th>1-core [ms]</th>
+<th>16-thread [ms]</th>
+<th>Rel. CPU</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="l">Teacher (16 solves)</td>
-<td>1.73 / 1.47 / 1.97</td>
-<td>2.04 / 1.87 / 2.50</td>
-<td>2.37 / 2.18 / 3.01</td>
-<td>2.48 / 2.40 / 3.29</td>
+<td>16</td>
+<td>300</td>
+<td>47.5</td>
+<td>1.00</td>
 </tr>
-<tr>
+<tr class="win">
 <td class="l">SideNet-MPC</td>
-<td>1.62 / 1.72 / 2.39</td>
-<td>1.84 / 2.09 / 2.99</td>
-<td>2.01 / 2.36 / 3.37</td>
-<td>2.01 / 2.51 / 3.62</td>
-</tr>
-<tr>
-<td class="l">Per-obstacle net</td>
-<td>1.60 / 1.68 / 2.26</td>
-<td>1.82 / 2.06 / 2.90</td>
-<td>1.97 / 2.36 / 3.34</td>
-<td>2.04 / 2.55 / 3.70</td>
-</tr>
-<tr>
-<td class="l">Capacity control</td>
-<td>1.57 / 1.74 / 2.39</td>
-<td>1.81 / 2.08 / 2.98</td>
-<td>1.96 / 2.44 / 3.54</td>
-<td>2.02 / 2.54 / 3.74</td>
-</tr>
-<tr>
-<td class="l">Bearing, 2 cand.</td>
-<td>2.16 / 2.52 / 3.63</td>
-<td>2.53 / 2.95 / 4.28</td>
-<td>2.63 / 3.18 / 4.62</td>
-<td>3.09 / 3.57 / 5.34</td>
+<td>2</td>
+<td><span class="good">28.1</span></td>
+<td>—</td>
+<td><span class="good">0.09</span></td>
 </tr>
 </tbody>
 </table>
 </div>
 <p class="lead" style="margin-top:8px">
-On one core, 16 OCP solves take 300&nbsp;ms versus 2 solves in 28.1&nbsp;ms, including the network pass.
-The teacher’s 16-thread batch is 47.5&nbsp;ms, still 1.7&times; slower than SideNet-MPC on one core.
+The other two-solve rows share the same OCP budget. SideNet-MPC is about 11&times; less CPU work than the sequential teacher and 1.7&times; lower latency than the 16-thread batch, on one core instead of sixteen.
 </p>
 </section>
 
