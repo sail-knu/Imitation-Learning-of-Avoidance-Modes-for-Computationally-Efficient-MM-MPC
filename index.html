@@ -80,6 +80,11 @@ p.lead{color:var(--muted);text-align:center;max-width:860px;margin:6px auto 0}
 .figpair{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin:16px 0 4px}
 @media(max-width:860px){.figpair{grid-template-columns:1fr}}
 
+.galgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px;margin:16px 0 4px}
+@media(max-width:700px){.galgrid{grid-template-columns:1fr}}
+.galgrid figure{margin:0}
+.galgrid figcaption{margin-top:8px;text-align:center;font-size:13.5px}
+
 figure{margin:22px 0;text-align:center}
 figure img{max-width:100%;height:auto;border-radius:10px;background:#fff}
 figcaption{font-size:14.5px;color:var(--muted);margin-top:10px;text-align:justify}
@@ -247,10 +252,35 @@ A network that judges each obstacle alone cannot see whether two obstacles leave
 The GNN carries that pairwise gap on its edges.
 </p>
 
+<div class="galgrid">
 <figure>
-<img src="static/fig_gallery.png" alt="Coupling gallery: same ego and b1, only b2 moves; MLP logit is identical, GNN tracks the expert">
-<figcaption><b>Coupling gallery.</b> Ego heading, speed, and the lead obstacle \(b_1\) are held fixed; only \(b_2\) moves. The per-obstacle MLP logit is identical in all four panels. It is right when \(b_2\) is on the free side and wrong when \(b_2\) blocks the intended gap; the GNN tracks the expert throughout.</figcaption>
+<img src="static/fig_gallery_a.png" alt="Coupling gallery panel a: b2 on the free side, gap 3.4 m">
+<figcaption>(a) \(g^*=3.4\,\mathrm{m}\). MLP \(+0.10\) ✓, GNN \(+0.62\) ✓.</figcaption>
 </figure>
+<figure>
+<img src="static/fig_gallery_b.png" alt="Coupling gallery panel b: b2 on the blocking side, gap 3.4 m">
+<figcaption>(b) \(g^*=3.4\,\mathrm{m}\). MLP \(+0.10\) ✗, GNN \(-1.48\) ✓.</figcaption>
+</figure>
+<figure>
+<img src="static/fig_gallery_c.png" alt="Coupling gallery panel c: b2 on the free side, gap 1.5 m">
+<figcaption>(c) \(g^*=1.5\,\mathrm{m}\). MLP \(+0.10\) ✓, GNN \(+1.89\) ✓.</figcaption>
+</figure>
+<figure>
+<img src="static/fig_gallery_d.png" alt="Coupling gallery panel d: b2 on the blocking side, gap 1.5 m">
+<figcaption>(d) \(g^*=1.5\,\mathrm{m}\). MLP \(+0.10\) ✗, GNN \(-1.79\) ✓.</figcaption>
+</figure>
+</div>
+<p class="lead" style="margin-top:8px;font-size:14.5px;text-align:justify;max-width:980px">
+<b style="color:var(--ink)">Coupling gallery.</b>
+Ego heading, speed, and \(b_1\) are identical in all four panels; only \(b_2\) moves.
+(a),(c): \(b_2\) on the free side of \(b_1\).
+(b),(d): \(b_2\) on the blocking side.
+Red: expert arg-min trajectory.
+\(g^*\): pair gap at the time the vehicle arrives.
+Numbers are lead-slot logits \(\ell_{b_1}\) (positive: pass \(b_1\) on the right).
+The MLP value is identical by construction.
+✓/✗: the sign agrees / disagrees with the expert bit of \(b_1\).
+</p>
 </section>
 
 <hr class="sep">
