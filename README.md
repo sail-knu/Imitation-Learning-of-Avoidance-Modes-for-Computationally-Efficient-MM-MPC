@@ -6,4 +6,4 @@ Project page for a manuscript under review.
 
 Changyu Lee (Kongju National University), Byung-Kwan Lee (NVIDIA Research), and Kanghoon Yoon (KAIST).
 
-This repository hosts the static site only: paper figures and closed-loop videos. Please refer to the submitted manuscript for the method.
+This repository hosts the static site only: paper figures, tables, and closed-loop videos. Please refer to the submitted manuscript for the method.

@@ -94,6 +94,8 @@ tbody tr.win{background:#eef5ee}
 tbody tr.win td{font-weight:600}
 td.l,th.l{text-align:left}
 .good{color:var(--good);font-weight:600}
+table.quality td,table.quality th{white-space:nowrap;font-size:14px}
+figure.narrow img{max-width:min(100%,720px)}
 
 footer{margin-top:52px;padding:24px 0 38px;border-top:1px solid var(--line);
  text-align:center;color:var(--faint);font-size:14px}
@@ -171,6 +173,26 @@ SideNet-MPC keeps only two: a GNN proposal and the previously executed decision.
 <hr class="sep">
 
 <section class="wide">
+<h2>Simulation environment</h2>
+<p class="lead">
+Teacher data and the randomized evaluations use the same 250&nbsp;m&nbsp;&times;&nbsp;40&nbsp;m corridor.
+Training uses the 100-obstacle mix only; denser scenes are out of distribution.
+</p>
+
+<figure>
+<img src="static/fig_simenv_a.png" alt="Full 250 m corridor with 30 static and 70 dynamic obstacles">
+<figcaption><b>Full course.</b> 250&nbsp;m&nbsp;&times;&nbsp;40&nbsp;m, 30 static (gray) and 70 dynamic (orange) obstacles. The vehicle starts at (0,0), aligned with +<i>x</i>, and tracks <i>y</i>&nbsp;=&nbsp;0 toward (250,0). Dashed circles mark the obstacle-free neighborhoods of the start and goal.</figcaption>
+</figure>
+
+<figure class="narrow">
+<img src="static/fig_simenv_b.png" alt="Start-region enlargement with dynamic-obstacle headings">
+<figcaption><b>Start region.</b> Enlargement of the boxed stretch. Arrows show the sampled constant-velocity headings of the dynamic obstacles.</figcaption>
+</figure>
+</section>
+
+<hr class="sep">
+
+<section class="wide">
 <h2>Closed-loop videos</h2>
 <p class="lead">
 Every controller in a clip sees the same traffic. Playback is accelerated.
@@ -238,13 +260,8 @@ The GNN carries that pairwise gap on its edges.
 </p>
 
 <figure>
-<img src="static/fig_gallery.png" alt="Coupling gallery: MLP is wrong in all twelve scenes, GNN matches the expert">
-<figcaption><b>Coupling gallery.</b> Adding a partner obstacle flips the expert side of the same lead obstacle. The per-obstacle MLP is unchanged — and wrong — in all twelve scenes; the GNN flips with the expert.</figcaption>
-</figure>
-
-<figure>
-<img src="static/fig_twin.png" alt="Twin-gates: GNN separates blocked and open gates; MLP cannot">
-<figcaption><b>Twin gates.</b> (a) With the lead obstacle’s own features held fixed, the per-obstacle net’s Δlogit is identically zero. SideNet-MPC separates a blocked gate from an open one. (b) Without the second candidate, the per-obstacle net stalls; SideNet-MPC finishes in 61 s.</figcaption>
+<img src="static/fig_gallery.png" alt="Coupling gallery: MLP is wrong in all four scenes, GNN matches the expert">
+<figcaption><b>Coupling gallery.</b> Adding a partner obstacle flips the expert side of the same lead obstacle. Four representative scenes span both flip directions and a range of pair gaps. The per-obstacle MLP is unchanged — and wrong — in all four; the GNN flips with the expert.</figcaption>
 </figure>
 </section>
 
@@ -257,8 +274,8 @@ The GNN carries that pairwise gap on its edges.
 </p>
 
 <figure>
-<img src="static/fig_density.png" alt="Success rate, ratio to expert, and control effort versus obstacle density">
-<figcaption><b>Success, expert ratio, and effort.</b> SideNet-MPC keeps 64–75% of the expert’s success with 2 solves instead of 16. The rule-based proposer collapses as density rises.</figcaption>
+<img src="static/fig_density.png" alt="Success rate relative to the expert and control effort versus obstacle density">
+<figcaption><b>Success relative to the expert, and effort.</b> (a) success rate relative to the expert, (b) control effort. Training used the 100-obstacle setting only. SideNet-MPC keeps 64–75% of expert success with 2 solves instead of 16; the rule-based proposer collapses out of distribution.</figcaption>
 </figure>
 
 <div class="tbl-scroll">
@@ -304,8 +321,61 @@ The GNN carries that pairwise gap on its edges.
 </tbody>
 </table>
 </div>
+
+<div class="tbl-scroll">
+<table class="quality">
+<caption>Quality over successful rollouts: cross-track error [m] / control effort <i>E<sub>u</sub></i> / input-rate effort <i>E</i><sub>&Delta;<i>u</i></sub>.</caption>
+<thead>
+<tr>
+<th class="l">Configuration</th>
+<th>100</th>
+<th>120</th>
+<th>130</th>
+<th>140</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="l">Teacher (16 solves)</td>
+<td>1.73 / 1.47 / 1.97</td>
+<td>2.04 / 1.87 / 2.50</td>
+<td>2.37 / 2.18 / 3.01</td>
+<td>2.48 / 2.40 / 3.29</td>
+</tr>
+<tr>
+<td class="l">SideNet-MPC</td>
+<td>1.62 / 1.72 / 2.39</td>
+<td>1.84 / 2.09 / 2.99</td>
+<td>2.01 / 2.36 / 3.37</td>
+<td>2.01 / 2.51 / 3.62</td>
+</tr>
+<tr>
+<td class="l">Per-obstacle net</td>
+<td>1.60 / 1.68 / 2.26</td>
+<td>1.82 / 2.06 / 2.90</td>
+<td>1.97 / 2.36 / 3.34</td>
+<td>2.04 / 2.55 / 3.70</td>
+</tr>
+<tr>
+<td class="l">Capacity control</td>
+<td>1.57 / 1.74 / 2.39</td>
+<td>1.81 / 2.08 / 2.98</td>
+<td>1.96 / 2.44 / 3.54</td>
+<td>2.02 / 2.54 / 3.74</td>
+</tr>
+<tr>
+<td class="l">Bearing, 2 cand.</td>
+<td>2.16 / 2.52 / 3.63</td>
+<td>2.53 / 2.95 / 4.28</td>
+<td>2.63 / 3.18 / 4.62</td>
+<td>3.09 / 3.57 / 5.34</td>
+</tr>
+</tbody>
+</table>
+</div>
 <p class="lead" style="margin-top:8px">
-Per period on one core: 16 OCP solves in 300 ms versus 2 solves in 28.1 ms, including the network pass.
+On one core, 16 OCP solves take 300&nbsp;ms versus 2 solves in 28.1&nbsp;ms, including the network pass.
+The teacher’s 16-thread batch is 47.5&nbsp;ms, still 1.7&times; slower than SideNet-MPC on one core.
 </p>
 </section>
 
