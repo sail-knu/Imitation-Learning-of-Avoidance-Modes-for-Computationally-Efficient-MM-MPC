@@ -78,7 +78,8 @@ p.lead{color:var(--muted);text-align:center;max-width:860px;margin:6px auto 0}
 .playnote{text-align:center;font-size:13px;color:var(--faint);margin-top:2px}
 
 .figpair{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin:16px 0 4px}
-@media(max-width:860px){.figpair{grid-template-columns:1fr}}
+.figpair.even{grid-template-columns:1fr 1fr}
+@media(max-width:860px){.figpair,.figpair.even{grid-template-columns:1fr}}
 
 .galgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px;margin:16px 0 4px}
 @media(max-width:700px){.galgrid{grid-template-columns:1fr}}
@@ -100,6 +101,8 @@ tbody tr.win td{font-weight:600}
 td.l,th.l{text-align:left}
 .good{color:var(--good);font-weight:600}
 figure.narrow img{max-width:min(100%,720px)}
+figure.mid img{max-width:min(100%,620px)}
+figcaption.center{text-align:center}
 
 footer{margin-top:52px;padding:24px 0 38px;border-top:1px solid var(--line);
  text-align:center;color:var(--faint);font-size:14px}
@@ -134,42 +137,51 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:38px auto;max-width:900p
 </header>
 
 <section class="wide">
-<h2>The idea</h2>
+<h2>Overview</h2>
 <p class="lead">
 Multimodal TC-CBF MPC enumerates every left/right combination of the decision-critical
-obstacles&mdash;<i>K</i>&nbsp;=&nbsp;2<sup><i>N<sub>b</sub></i></sup> parallel OCPs.
-SideNet-MPC keeps only two: a GNN proposal and the previously executed decision.
+obstacles&mdash;<i>K</i>&nbsp;=&nbsp;2<sup><i>N<sub>b</sub></i></sup>&nbsp;=&nbsp;16 parallel OCPs.
+SideNet-MPC keeps only two: the side combination proposed by a graph network, and the
+decision executed at the previous step. The lower measured cost is executed.
 </p>
 
-<div class="flow">
-<div class="flowrow">
-<span class="who">Expert</span>
-<span class="pill">select obstacles</span>
-<span class="arrow">→</span>
-<span class="pill">solve all <i>K</i> = 16 OCPs</span>
-<span class="arrow">→</span>
-<span class="pill">lowest measured cost</span>
-</div>
-<div class="flowrow">
-<span class="who">SideNet-MPC</span>
-<span class="pill">same selection</span>
-<span class="arrow">→</span>
-<span class="pill hi">GNN proposes sides</span>
-<span class="arrow">→</span>
-<span class="pill hi">solve 2 OCPs</span>
-<span class="arrow">→</span>
-<span class="pill">lower measured cost</span>
-</div>
-</div>
+<figure class="mid">
+<img src="static/motv.png" alt="Block structure of the MM-MPC expert and of SideNet-MPC">
+<figcaption><b>(a) Block structure.</b> The expert solves all <i>K</i>&nbsp;=&nbsp;16 TC-CBF
+constrained OCPs per control period and executes the minimum-cost mode. SideNet-MPC predicts one
+avoidance side per branch obstacle, keeps the previously executed decision as a second candidate,
+and executes the lower-cost of only two OCP solutions.</figcaption>
+</figure>
 
-<div class="figpair">
 <figure>
-<img src="static/fig_modes16.png" alt="Sixteen candidate avoidance modes at one planning step">
-<figcaption><b>Sixteen modes at one step.</b> Each mode fixes the left/right side of four branch obstacles and solves one OCP. The expert picks the executed mode from the measured costs.</figcaption>
+<img src="static/motv_snap.png" alt="Candidate and executed trajectories at a single planning step">
+<figcaption><b>(b) One planning step of the same scene.</b> Candidates in grey; executed
+trajectory in red (expert) and blue (SideNet-MPC). Both commit to the same maneuver &mdash; the
+expert pays sixteen solves for it, the student two.</figcaption>
+</figure>
+</section>
+
+<hr class="sep">
+
+<section class="wide">
+<h2>Homotopy modes</h2>
+<p class="lead">
+Each sign assignment fixes the left/right side of every branch obstacle and yields one
+TC-CBF constrained OCP; the executed mode is the measured minimum.
+</p>
+
+<div class="figpair even">
+<figure>
+<img src="static/fig_modes4.png" alt="Four homotopy modes for two branch obstacles">
+<figcaption><b>(a) Two branch obstacles, <i>K</i>&nbsp;=&nbsp;2<sup>2</sup>.</b> The four sign
+assignments give distinct optimal trajectories whose costs are of comparable magnitude, so the
+choice is not resolved by local optimization alone.</figcaption>
 </figure>
 <figure>
-<img src="static/fig_modes4.png" alt="Four homotopy modes for two obstacles">
-<figcaption><b>Four homotopies, two obstacles.</b> The four sign assignments yield distinct trajectories of comparable cost; local optimization alone does not choose the side.</figcaption>
+<img src="static/fig_modes16.png" alt="Sixteen candidate avoidance modes in a cluttered scene">
+<figcaption><b>(b) Four branch obstacles, <i>K</i>&nbsp;=&nbsp;2<sup>4</sup>.</b> The same
+enumeration already costs sixteen solves per control period. This exponential budget is what the
+learned proposal replaces.</figcaption>
 </figure>
 </div>
 </section>
@@ -191,6 +203,30 @@ Training uses the 100-obstacle mix only; denser scenes are out of distribution.
 <figure class="narrow">
 <img src="static/fig_simenv_b.png" alt="Start-region enlargement with dynamic-obstacle headings">
 <figcaption><b>Start region.</b> Enlargement of the boxed stretch. Arrows show the sampled constant-velocity headings of the dynamic obstacles.</figcaption>
+</figure>
+</section>
+
+<hr class="sep">
+
+<section class="wide">
+<h2>SideNet, the mode proposer</h2>
+<p class="lead">
+The <i>N<sub>b</sub></i> branch slots form a complete graph. A single edge-conditioned
+message-passing layer carries the coupling that no per-obstacle feature can express.
+</p>
+
+<figure>
+<img src="static/avoidnet.png" alt="SideNet: shared backbone, edge-conditioned message passing, one logit per branch slot">
+<figcaption><b>SideNet.</b> A shared backbone embeds each 14-dimensional slot feature
+<b>x</b><sub><i>i</i></sub> (eight obstacle, six ego) as <b>h</b><sub><i>i</i></sub>, and every pair
+carries six edge features <b>e</b><sub><i>ij</i></sub> &mdash; among them the surface gap predicted
+at the shared encounter time <i>t</i><sup>*</sup><sub><i>ij</i></sub>, and flags against
+<i>w<sub>h</sub></i>&nbsp;=&nbsp;2<i>R<sub>s</sub></i> and
+<i>w<sub>s</sub></i>&nbsp;=&nbsp;2(<i>R<sub>s</sub></i>&nbsp;+&nbsp;&delta;). One residual layer
+sums the gated messages over <i>j</i>&nbsp;&ne;&nbsp;<i>i</i> and adds an update back onto
+<b>h</b><sub><i>i</i></sub>. A shared head emits one logit &#8467;<sub><i>i</i></sub> per slot,
+positive meaning pass on the right; the logit signs define the proposed mode
+<i>m</i><sup>nn</sup>.</figcaption>
 </figure>
 </section>
 
@@ -255,31 +291,32 @@ The GNN carries that pairwise gap on its edges.
 <div class="galgrid">
 <figure>
 <img src="static/fig_gallery_a.png" alt="Coupling gallery panel a: b2 on the free side, gap 3.4 m">
-<figcaption>(a) \(g^*=3.4\,\mathrm{m}\). MLP \(+0.10\) ✓, GNN \(+0.62\) ✓.</figcaption>
+<figcaption class="center">(a) <i>g</i><sup>*</sup> = 3.4 m. MLP +0.10 ✓, GNN +0.62 ✓.</figcaption>
 </figure>
 <figure>
 <img src="static/fig_gallery_b.png" alt="Coupling gallery panel b: b2 on the blocking side, gap 3.4 m">
-<figcaption>(b) \(g^*=3.4\,\mathrm{m}\). MLP \(+0.10\) ✗, GNN \(-1.48\) ✓.</figcaption>
+<figcaption class="center">(b) <i>g</i><sup>*</sup> = 3.4 m. MLP +0.10 ✗, GNN &minus;1.48 ✓.</figcaption>
 </figure>
 <figure>
 <img src="static/fig_gallery_c.png" alt="Coupling gallery panel c: b2 on the free side, gap 1.5 m">
-<figcaption>(c) \(g^*=1.5\,\mathrm{m}\). MLP \(+0.10\) ✓, GNN \(+1.89\) ✓.</figcaption>
+<figcaption class="center">(c) <i>g</i><sup>*</sup> = 1.5 m. MLP +0.10 ✓, GNN +1.89 ✓.</figcaption>
 </figure>
 <figure>
 <img src="static/fig_gallery_d.png" alt="Coupling gallery panel d: b2 on the blocking side, gap 1.5 m">
-<figcaption>(d) \(g^*=1.5\,\mathrm{m}\). MLP \(+0.10\) ✗, GNN \(-1.79\) ✓.</figcaption>
+<figcaption class="center">(d) <i>g</i><sup>*</sup> = 1.5 m. MLP +0.10 ✗, GNN &minus;1.79 ✓.</figcaption>
 </figure>
 </div>
 <p class="lead" style="margin-top:8px;font-size:14.5px;text-align:justify;max-width:980px">
 <b style="color:var(--ink)">Coupling gallery.</b>
-Ego heading, speed, and \(b_1\) are identical in all four panels; only \(b_2\) moves.
-(a),(c): \(b_2\) on the free side of \(b_1\).
-(b),(d): \(b_2\) on the blocking side.
+Ego heading, speed, and <i>b</i><sub>1</sub> are identical in all four panels; only
+<i>b</i><sub>2</sub> moves.
+(a),&nbsp;(c): <i>b</i><sub>2</sub> on the free side of <i>b</i><sub>1</sub>.
+(b),&nbsp;(d): <i>b</i><sub>2</sub> on the blocking side.
 Red: expert arg-min trajectory.
-\(g^*\): pair gap at the time the vehicle arrives.
-Numbers are lead-slot logits \(\ell_{b_1}\) (positive: pass \(b_1\) on the right).
-The MLP value is identical by construction.
-✓/✗: the sign agrees / disagrees with the expert bit of \(b_1\).
+<i>g</i><sup>*</sup>: pair gap at the time the vehicle arrives.
+The numbers are lead-slot logits &#8467;<sub><i>b</i><sub>1</sub></sub>
+(positive: pass <i>b</i><sub>1</sub> on the right); the MLP value is identical by construction.
+✓/✗: the sign agrees / disagrees with the expert bit of <i>b</i><sub>1</sub>.
 </p>
 </section>
 
@@ -288,7 +325,8 @@ The MLP value is identical by construction.
 <section class="wide">
 <h2>Density sweep</h2>
 <p class="lead">
-300 seeds per cell. Training used the 100-obstacle setting only; 120–140 are out of distribution.
+300 seeds per cell, more than 7,000 closed-loop rollouts in total. Training used the
+100-obstacle setting only; 120&ndash;140 are out of distribution.
 </p>
 
 <figure>
@@ -376,7 +414,10 @@ The other two-solve rows share the same OCP budget. SideNet-MPC is about 11&time
 </section>
 
 <footer>
-Supplementary figures and videos for a manuscript under review. Static site, no tracking.
+Supplementary figures and videos for a manuscript under review. Static site, no tracking.<br>
+Supported by the Glocal University 30 Project of Kongju National University in 2026, and by the
+National Research Foundation of Korea (NRF) grant funded by the Korea government (MSIT)
+(No.&nbsp;RS-2026-25490010).
 </footer>
 
 <script>
