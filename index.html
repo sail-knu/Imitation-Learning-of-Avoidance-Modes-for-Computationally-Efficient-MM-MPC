@@ -207,7 +207,7 @@ learned proposal replaces.</figcaption>
 <section class="wide">
 <h2>Simulation environment</h2>
 <p class="lead">
-Teacher data and the randomized evaluations use the same 250&nbsp;m&nbsp;&times;&nbsp;40&nbsp;m corridor.
+Expert data and the randomized evaluations use the same 250&nbsp;m&nbsp;&times;&nbsp;40&nbsp;m corridor.
 Training uses the 100-obstacle mix only; denser scenes are out of distribution.
 </p>
 
@@ -252,23 +252,23 @@ positive meaning pass on the right; the logit signs define the proposed mode
 <h2>Closed-loop videos</h2>
 <p class="lead">
 Every controller in a clip sees the same traffic. Playback is accelerated.
-Teacher: 16 solves. SideNet-MPC: 2 solves.
+Expert: 16 solves. SideNet-MPC: 2 solves.
 </p>
 
 <h3>Overtaking</h3>
 <div class="vid best">
-<span class="tag">Overtaking — Teacher · SideNet-MPC · Bearing 2 · Bearing 1</span>
+<span class="tag">Overtaking — Expert · SideNet-MPC · Bearing 2 · Bearing 1</span>
 <video class="clip" muted playsinline preload="metadata" poster="static/poster_case_overtake.png">
 <source src="static/video_case_overtake.mp4" type="video/mp4">
 </video>
-<p class="sub">Same overtaking scene, four controllers at matching times. Teacher (16 candidates) and SideNet-MPC (2) take the swerve; both bearing rules stay in the pass-through mode.</p>
+<p class="sub">Same overtaking scene, four controllers at matching times. Expert (16 candidates) and SideNet-MPC (2) take the swerve; both bearing rules stay in the pass-through mode.</p>
 </div>
 <div class="vid best" style="margin-top:16px">
-<span class="tag">Monte Carlo seed 618 — Teacher · SideNet-MPC · Bearing, 2 cand.</span>
+<span class="tag">Monte Carlo seed 618 — Expert · SideNet-MPC · Bearing, 2 cand.</span>
 <video class="clip" muted playsinline preload="metadata" poster="static/poster_case_mc.png">
 <source src="static/video_case_mc.mp4" type="video/mp4">
 </video>
-<p class="sub">One Monte Carlo seed, three controllers. Teacher (16 candidates) and SideNet-MPC (2) thread the same traffic. An early wrong side drives the bearing rule into the wall at 56.5 s.</p>
+<p class="sub">One Monte Carlo seed, three controllers. Expert (16 candidates) and SideNet-MPC (2) thread the same traffic. An early wrong side drives the bearing rule into the wall at 56.5 s.</p>
 </div>
 <p class="playnote">Clips start automatically as they scroll into view.</p>
 </section>
@@ -281,17 +281,17 @@ Teacher: 16 solves. SideNet-MPC: 2 solves.
 
 <figure>
 <img src="static/fig_papers1_snap.png" alt="Overtaking candidates at t = 10 s and 16 s">
-<figcaption><b>Overtaking, candidate set.</b> At the decision instant the teacher shows all 16 modes; SideNet-MPC reaches the same swerve with 2. Both bearing variants stay in the doomed pass-through mode.</figcaption>
+<figcaption><b>Overtaking, candidate set.</b> At the decision instant the expert shows all 16 modes; SideNet-MPC reaches the same swerve with 2. Both bearing variants stay in the doomed pass-through mode.</figcaption>
 </figure>
 
 <figure>
 <img src="static/fig_papers1_profiles.png" alt="Overtaking closed-loop trajectories and input profiles">
-<figcaption><b>Overtaking, closed loop.</b> Teacher and SideNet-MPC produce nearly identical maneuvers. Bearing with two candidates collides (cross); the single-candidate rule brakes behind the pair.</figcaption>
+<figcaption><b>Overtaking, closed loop.</b> Expert and SideNet-MPC produce nearly identical maneuvers. Bearing with two candidates collides (cross); the single-candidate rule brakes behind the pair.</figcaption>
 </figure>
 
 <figure>
-<img src="static/fig_mc_snap.png" alt="Monte Carlo seed: teacher, SideNet-MPC, and bearing at the same times">
-<figcaption><b>One Monte Carlo seed, three controllers.</b> Teacher (16 candidates) and SideNet-MPC (2) thread the same traffic. An early wrong side drives the bearing rule into the wall at 56.5 s.</figcaption>
+<img src="static/fig_mc_snap.png" alt="Monte Carlo seed: expert, SideNet-MPC, and bearing at the same times">
+<figcaption><b>One Monte Carlo seed, three controllers.</b> Expert (16 candidates) and SideNet-MPC (2) thread the same traffic. An early wrong side drives the bearing rule into the wall at 56.5 s.</figcaption>
 </figure>
 </section>
 
@@ -300,40 +300,27 @@ Teacher: 16 solves. SideNet-MPC: 2 solves.
 <section class="wide">
 <h2>What the GNN is for</h2>
 <p class="lead">
-A network that judges each obstacle alone cannot see whether two obstacles leave a passable gap.
-The GNN carries that pairwise gap on its edges.
+A slot-independent network cannot change the lead-obstacle side when a neighbor
+blocks the preferred gap. SideNet carries that pair gap on its edges.
 </p>
 
-<div class="galgrid">
 <figure>
-<img src="static/fig_gallery_a.png" alt="Coupling gallery panel a: b2 on the free side, gap 3.4 m">
-<figcaption class="center">(a) <i>g</i><sup>*</sup> = 3.4 m. MLP +0.10 ✓, GNN +0.62 ✓.</figcaption>
+<img src="static/fig_gapcurve.png" alt="SideNet and slot-independent MLP logits versus pair gap, with three scene snapshots">
+<figcaption><b>Side decision against the pair gap.</b>
+The partner <i>b</i><sub>2</sub> is slid away from the fixed lead obstacle
+<i>b</i><sub>1</sub>, so only <i>g</i><sup>*</sup> varies.
+Left: branch logit &#8467;<sub><i>b</i><sub>1</sub></sub> of SideNet and of the
+slot-independent MLP (positive: pass <i>b</i><sub>1</sub> on the right).
+Shading is the expert's side; the solid line is its switch; dashed lines mark
+<i>w<sub>h</sub></i>&nbsp;=&nbsp;2<i>R<sub>s</sub></i> and
+<i>w<sub>s</sub></i>&nbsp;=&nbsp;2(<i>R<sub>s</sub></i>&nbsp;+&nbsp;&delta;).
+The MLP stays flat at +1.044; SideNet changes sign between 3.22&nbsp;m and
+3.54&nbsp;m, next to <i>w<sub>s</sub></i>&nbsp;=&nbsp;3.4&nbsp;m. The expert
+switches just above that, between 3.54&nbsp;m and 3.87&nbsp;m.
+Right: scenes at <i>g</i><sup>*</sup>&nbsp;=&nbsp;0.3, 1.9 and 4.2&nbsp;m,
+each with the mode SideNet proposes &mdash; also the expert's minimum-cost mode.
+</figcaption>
 </figure>
-<figure>
-<img src="static/fig_gallery_b.png" alt="Coupling gallery panel b: b2 on the blocking side, gap 3.4 m">
-<figcaption class="center">(b) <i>g</i><sup>*</sup> = 3.4 m. MLP +0.10 ✗, GNN &minus;1.48 ✓.</figcaption>
-</figure>
-<figure>
-<img src="static/fig_gallery_c.png" alt="Coupling gallery panel c: b2 on the free side, gap 1.5 m">
-<figcaption class="center">(c) <i>g</i><sup>*</sup> = 1.5 m. MLP +0.10 ✓, GNN +1.89 ✓.</figcaption>
-</figure>
-<figure>
-<img src="static/fig_gallery_d.png" alt="Coupling gallery panel d: b2 on the blocking side, gap 1.5 m">
-<figcaption class="center">(d) <i>g</i><sup>*</sup> = 1.5 m. MLP +0.10 ✗, GNN &minus;1.79 ✓.</figcaption>
-</figure>
-</div>
-<p class="lead" style="margin-top:8px;font-size:14.5px;text-align:justify;max-width:980px">
-<b style="color:var(--ink)">Coupling gallery.</b>
-Ego heading, speed, and <i>b</i><sub>1</sub> are identical in all four panels; only
-<i>b</i><sub>2</sub> moves.
-(a),&nbsp;(c): <i>b</i><sub>2</sub> on the free side of <i>b</i><sub>1</sub>.
-(b),&nbsp;(d): <i>b</i><sub>2</sub> on the blocking side.
-Red: expert arg-min trajectory.
-<i>g</i><sup>*</sup>: pair gap at the time the vehicle arrives.
-The numbers are lead-slot logits &#8467;<sub><i>b</i><sub>1</sub></sub>
-(positive: pass <i>b</i><sub>1</sub> on the right); the MLP value is identical by construction.
-✓/✗: the sign agrees / disagrees with the expert bit of <i>b</i><sub>1</sub>.
-</p>
 </section>
 
 <hr class="sep">
@@ -341,18 +328,18 @@ The numbers are lead-slot logits &#8467;<sub><i>b</i><sub>1</sub></sub>
 <section class="wide">
 <h2>Density sweep</h2>
 <p class="lead">
-300 seeds per cell, more than 7,000 closed-loop rollouts in total. Training used the
+300 seeds per cell, 7,200 closed-loop rollouts in this sweep. Training used the
 100-obstacle setting only; 120&ndash;140 are out of distribution.
 </p>
 
-<figure>
-<img src="static/fig_density.png" alt="Success rate relative to the expert and control effort versus obstacle density">
-<figcaption><b>Success relative to the expert, and effort.</b> (a) success rate relative to the expert, (b) control effort. Training used the 100-obstacle setting only. SideNet-MPC keeps 64–75% of expert success with 2 solves instead of 16; the rule-based proposer collapses out of distribution.</figcaption>
+<figure class="narrow">
+<img src="static/fig_density.png" alt="Success rate relative to the expert versus obstacle density">
+<figcaption><b>Success relative to the expert.</b> 300 seeds per cell. Training used the 100-obstacle setting only; 120–140 are out of distribution. SideNet-MPC keeps 64–75% of expert success with 2 solves instead of 16; the one-candidate bearing rule retains almost none.</figcaption>
 </figure>
 
 <div class="tbl-scroll">
 <table>
-<caption>Success rate [%] over 300 seeds. Parentheses: ratio to the expert [%].</caption>
+<caption>Success relative to the expert [%] over 300 seeds. Expert is 100 in every column. The last row uses one candidate and one OCP; every other row uses the two-candidate deployment.</caption>
 <thead>
 <tr>
 <th class="l">Configuration</th>
@@ -364,31 +351,31 @@ The numbers are lead-slot logits &#8467;<sub><i>b</i><sub>1</sub></sub>
 </thead>
 <tbody>
 <tr>
-<td class="l">Teacher (16 solves)</td>
-<td>61.0</td><td>44.7</td><td>34.7</td><td>33.0</td>
+<td class="l">Expert (16 solves)</td>
+<td>100</td><td>100</td><td>100</td><td>100</td>
 </tr>
 <tr class="win">
 <td class="l">SideNet-MPC</td>
-<td><span class="good">46.0 (75)</span></td>
-<td><span class="good">33.3 (75)</span></td>
-<td><span class="good">24.7 (71)</span></td>
-<td><span class="good">21.0 (64)</span></td>
+<td><span class="good">75</span></td>
+<td><span class="good">75</span></td>
+<td><span class="good">71</span></td>
+<td><span class="good">64</span></td>
 </tr>
 <tr>
-<td class="l">Per-obstacle net</td>
-<td>40.0 (66)</td><td>30.7 (69)</td><td>20.0 (58)</td><td>16.7 (51)</td>
+<td class="l">Slot-independent MLP</td>
+<td>66</td><td>69</td><td>58</td><td>51</td>
 </tr>
 <tr>
-<td class="l">Capacity control</td>
-<td>43.3 (71)</td><td>31.7 (71)</td><td>18.3 (53)</td><td>16.3 (49)</td>
+<td class="l">Slot-independent MLP, wide</td>
+<td>71</td><td>71</td><td>53</td><td>49</td>
 </tr>
 <tr>
 <td class="l">Bearing, 2 cand.</td>
-<td>39.7 (65)</td><td>25.0 (56)</td><td>16.3 (47)</td><td>9.0 (27)</td>
+<td>65</td><td>56</td><td>47</td><td>27</td>
 </tr>
 <tr>
 <td class="l">Bearing, 1 cand.</td>
-<td>1.3 (2)</td><td>0.0 (0)</td><td>0.0 (0)</td><td>0.0 (0)</td>
+<td>2</td><td>0</td><td>0</td><td>0</td>
 </tr>
 </tbody>
 </table>
@@ -408,7 +395,7 @@ The numbers are lead-slot logits &#8467;<sub><i>b</i><sub>1</sub></sub>
 </thead>
 <tbody>
 <tr>
-<td class="l">Teacher (16 solves)</td>
+<td class="l">Expert (16 solves)</td>
 <td>16</td>
 <td>300</td>
 <td>47.5</td>
@@ -425,7 +412,7 @@ The numbers are lead-slot logits &#8467;<sub><i>b</i><sub>1</sub></sub>
 </table>
 </div>
 <p class="lead" style="margin-top:8px">
-The other two-solve rows share the same OCP budget. SideNet-MPC is about 11&times; less CPU work than the sequential teacher and 1.7&times; lower latency than the 16-thread batch, on one core instead of sixteen.
+The other two-solve rows share the same OCP budget. SideNet-MPC is about 11&times; less CPU work than the sequential expert and 1.7&times; lower latency than the 16-thread batch, on one core instead of sixteen.
 </p>
 </section>
 
