@@ -5,15 +5,76 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Imitation Learning of Avoidance Modes for Computationally Efficient MM-MPC</title>
 <meta name="description" content="Figures and closed-loop videos for SideNet-MPC: imitation learning of avoidance modes for computationally efficient multimodal MPC.">
+<meta name="theme-color" content="#ffffff">
+<script>
+/* Applies a stored theme choice before first paint, so an explicit choice
+   never flashes the other theme. No choice stored = follow the system. */
+(function () {
+ var KEY = 'sidenet-mpc:theme', saved = null;
+ try { saved = localStorage.getItem(KEY); } catch (e) {}
+ if (saved === 'light' || saved === 'dark') document.documentElement.setAttribute('data-theme', saved);
+ var dark = saved === 'dark' || (saved !== 'light' && window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+ var m = document.querySelector('meta[name="theme-color"]');
+ if (m) m.setAttribute('content', dark ? '#12161c' : '#ffffff');
+})();
+</script>
 <style>
+/* ------------------------------------------------------------------
+   Palette. Light is the source of truth; the two dark blocks below
+   redefine values only and MUST be kept byte-identical to each other.
+   Every colour on the page goes through a token, so no rule needs a
+   dark-mode counterpart of its own.
+   ------------------------------------------------------------------ */
 :root{
- --ink:#1c2430; --muted:#5b6472; --faint:#8b93a1;
- --accent:#0b63c4; --accent-ink:#084b96;
- --bg:#ffffff; --panel:#f5f7fa; --line:#e3e7ee;
+ color-scheme: light;
+ --ink:#1c2430; --muted:#5b6472; --faint:#69727f;
+ --accent:#0b63c4; --accent-ink:#084b96; --accent-on:#ffffff;
+ --bg:#ffffff; --panel:#f5f7fa; --line:#e3e7ee; --rule:#1c2430;
  --good:#0a7d4f; --bad:#b3403a;
+ --plate:#ffffff; --plate-mat:transparent; --plate-ring:transparent; --mat:0px;
+ --logo-plate:transparent; --logo-pad:0; --logo-op:.92;
+ --badge-bg:#fff4d6; --badge-line:#f0d9a0; --badge-ink:#8a6100;
+ --hi-bg:#e8f1fb; --hi-line:#c5d8ef;
+ --win-bg:#eef5ee; --tag-bg:#e8edf5; --fail-bg:#f3e3e2;
+ --focus:#0b63c4;
+ --icon-sun:inline; --icon-moon:none;
+}
+/* dark because the system asks for it and the reader has not overridden */
+@media (prefers-color-scheme: dark){
+ :root:not([data-theme="light"]){
+  color-scheme: dark;
+  --ink:#e3e8f0; --muted:#a2adbc; --faint:#8a94a3;
+  --accent:#6ba6f5; --accent-ink:#a6cbf8; --accent-on:#08111c;
+  --bg:#12161c; --panel:#191f27; --line:#2f3845; --rule:#55627a;
+  --good:#46c489; --bad:#ef8079;
+  --plate:#ffffff; --plate-mat:#dde3ec; --plate-ring:#aab4c4; --mat:5px;
+  --logo-plate:#eef1f6; --logo-pad:10px clamp(14px,3vw,26px); --logo-op:1;
+  --badge-bg:#2b2213; --badge-line:#4d3d1e; --badge-ink:#f0cf92;
+  --hi-bg:#142337; --hi-line:#27415f;
+  --win-bg:#14231b; --tag-bg:#232c38; --fail-bg:#33211f;
+  --focus:#a6cbf8;
+  --icon-sun:none; --icon-moon:inline;
+ }
+}
+/* dark because the reader chose it. Same specificity as the block above,
+   so it has to stay after it in source order. */
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ink:#e3e8f0; --muted:#a2adbc; --faint:#8a94a3;
+  --accent:#6ba6f5; --accent-ink:#a6cbf8; --accent-on:#08111c;
+  --bg:#12161c; --panel:#191f27; --line:#2f3845; --rule:#55627a;
+  --good:#46c489; --bad:#ef8079;
+  --plate:#ffffff; --plate-mat:#dde3ec; --plate-ring:#aab4c4; --mat:5px;
+  --logo-plate:#eef1f6; --logo-pad:10px clamp(14px,3vw,26px); --logo-op:1;
+  --badge-bg:#2b2213; --badge-line:#4d3d1e; --badge-ink:#f0cf92;
+  --hi-bg:#142337; --hi-line:#27415f;
+  --win-bg:#14231b; --tag-bg:#232c38; --fail-bg:#33211f;
+  --focus:#a6cbf8;
+  --icon-sun:none; --icon-moon:inline;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;background:var(--bg)}
 body{
  font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
  color:var(--ink);background:var(--bg);
@@ -28,12 +89,20 @@ h1{font-size:clamp(23px,3.4vw,32px);line-height:1.25;font-weight:700;letter-spac
 h1 .thin{font-weight:400;color:var(--muted)}
 .authors{margin-top:16px;font-size:16.5px}
 .affil{margin-top:4px;color:var(--muted);font-size:14.5px}
+.corr{margin-top:7px;color:var(--muted);font-size:13.5px}
+/* raised marks must not grow the line box in the header; scoped so the
+   maths superscripts in the body keep their default rendering */
+.authors sup,.affil sup,.corr sup{vertical-align:baseline;position:relative;top:-.42em;line-height:0}
 .logos{
  display:flex;align-items:center;justify-content:center;
  gap:clamp(28px,5vw,56px);flex-wrap:wrap;
  margin:22px auto 2px;
+ /* the three marks are dark-on-transparent, so on a dark page the row sits
+    on a light plate rather than being recoloured */
+ background:var(--logo-plate);border-radius:14px;
+ padding:var(--logo-pad);width:fit-content;max-width:100%;
 }
-.logos a{display:block;line-height:0;opacity:.92}
+.logos a{display:block;line-height:0;opacity:var(--logo-op)}
 .logos a:hover{opacity:1}
 .logos img{display:block;width:auto;object-fit:contain}
 .logos .seal{height:112px}
@@ -41,7 +110,7 @@ h1 .thin{font-weight:400;color:var(--muted)}
 .logos .word.kaist{height:60px}
 .badge{
  display:inline-block;margin-top:16px;padding:5px 16px;border-radius:999px;
- background:#fff4d6;border:1px solid #f0d9a0;color:#8a6100;
+ background:var(--badge-bg);border:1px solid var(--badge-line);color:var(--badge-ink);
  font-size:14px;font-weight:600;letter-spacing:.2px;
 }
 .note{margin-top:14px;color:var(--muted);font-size:15.5px}
@@ -72,20 +141,21 @@ p.lead{color:var(--muted);text-align:center;max-width:860px;margin:6px auto 0}
  background:var(--panel);border:1px solid var(--line);border-radius:10px;
  padding:7px 12px;font-size:13.5px;color:var(--ink);
 }
-.pill.hi{background:#e8f1fb;border-color:#c5d8ef;color:var(--accent-ink);font-weight:600}
+.pill.hi{background:var(--hi-bg);border-color:var(--hi-line);color:var(--accent-ink);font-weight:600}
 .arrow{color:var(--faint);font-size:16px}
 
 .vidgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0 4px}
 @media(max-width:860px){.vidgrid{grid-template-columns:1fr}}
 .vid{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
-.vid video,.vid img{width:100%;height:auto;border-radius:8px;display:block;background:#fff}
+.vid video,.vid img{width:100%;height:auto;border-radius:8px;display:block;background:var(--plate);
+ box-shadow:0 0 0 var(--mat) var(--plate-mat),0 0 0 calc(var(--mat) + 1px) var(--plate-ring)}
 .vid .tag{
- display:inline-block;margin-bottom:8px;font-size:13px;font-weight:600;
- border-radius:999px;padding:3px 12px;background:#e8edf5;color:var(--muted);
+ display:inline-block;margin-bottom:calc(8px + var(--mat));font-size:13px;font-weight:600;
+ border-radius:999px;padding:3px 12px;background:var(--tag-bg);color:var(--muted);
 }
-.vid.best .tag{background:var(--accent);color:#fff}
-.vid.fail .tag{background:#f3e3e2;color:var(--bad)}
-.vid .sub{font-size:13.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+.vid.best .tag{background:var(--accent);color:var(--accent-on)}
+.vid.fail .tag{background:var(--fail-bg);color:var(--bad)}
+.vid .sub{font-size:13.5px;color:var(--muted);margin-top:calc(8px + var(--mat));line-height:1.5}
 .playnote{text-align:center;font-size:13px;color:var(--faint);margin-top:2px}
 
 .figpair{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin:16px 0 4px}
@@ -98,16 +168,20 @@ p.lead{color:var(--muted);text-align:center;max-width:860px;margin:6px auto 0}
 .galgrid figcaption{margin-top:8px;text-align:center;font-size:13.5px}
 
 figure{margin:22px 0;text-align:center}
-figure img{max-width:100%;height:auto;border-radius:10px;background:#fff}
-figcaption{font-size:14.5px;color:var(--muted);margin-top:10px;text-align:justify}
+/* the figures are opaque white renders whose colours carry meaning, so they
+   are never filtered; on a dark page they are matted instead, which steps the
+   white-to-page edge down without touching a pixel */
+figure img{max-width:100%;height:auto;border-radius:10px;background:var(--plate);
+ box-shadow:0 0 0 var(--mat) var(--plate-mat),0 0 0 calc(var(--mat) + 1px) var(--plate-ring)}
+figcaption{font-size:14.5px;color:var(--muted);margin-top:calc(10px + var(--mat));text-align:justify}
 figcaption b{color:var(--ink)}
 
 .tbl-scroll{overflow-x:auto;margin:18px 0}
 table{border-collapse:collapse;margin:0 auto;font-size:15.5px;min-width:520px}
 caption{caption-side:top;font-size:14.5px;color:var(--muted);padding-bottom:10px;text-align:center}
 th,td{padding:8px 16px;text-align:center;border-bottom:1px solid var(--line)}
-thead th{border-bottom:2px solid var(--ink);font-size:14.5px}
-tbody tr.win{background:#eef5ee}
+thead th{border-bottom:2px solid var(--rule);font-size:14.5px}
+tbody tr.win{background:var(--win-bg)}
 tbody tr.win td{font-weight:600}
 td.l,th.l{text-align:left}
 .good{color:var(--good);font-weight:600}
@@ -131,15 +205,92 @@ hr.sep{border:0;border-top:1px solid var(--line);margin:38px auto;max-width:900p
 .clipwrap .replay:hover{background:rgba(11,99,196,.95)}
 .clipwrap .replay svg{width:13px;height:13px;fill:currentColor}
 .clipwrap.done .replay{display:inline-flex}
+
+/* theme control ------------------------------------------------------- */
+.theme-toggle{
+ position:fixed;z-index:50;
+ top:calc(10px + env(safe-area-inset-top,0px));
+ right:calc(10px + env(safe-area-inset-right,0px));
+ width:44px;height:44px;padding:0;
+ display:inline-flex;align-items:center;justify-content:center;
+ border:1px solid var(--line);border-radius:999px;
+ background:var(--panel);color:var(--muted);cursor:pointer;
+ -webkit-tap-highlight-color:transparent;
+}
+/* the display above beats the UA [hidden] rule, so restate it: without JS
+   the button never appears */
+.theme-toggle[hidden]{display:none}
+.theme-toggle:hover{color:var(--ink);border-color:var(--accent)}
+.theme-toggle svg{
+ width:19px;height:19px;fill:none;stroke:currentColor;
+ stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;
+}
+.theme-toggle .i-sun{display:var(--icon-sun)}
+.theme-toggle .i-moon{display:var(--icon-moon)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+/* the fixed control clears the centred column above ~1010px; below that the
+   header needs room for it. header.wrap, not header: .wrap's padding wins on
+   specificity (which is also why the header{padding:54px...} rule above has
+   never applied). */
+@media screen and (max-width:1010px){header.wrap{padding-top:60px}}
+@media(max-width:640px){
+ .theme-toggle{top:calc(8px + env(safe-area-inset-top,0px));right:8px}
+}
+/* the crossfade exists only for the ~200 ms around a click, so it can never
+   fire on first paint */
+html.theme-anim,html.theme-anim *{
+ transition:background-color .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease !important;
+}
+
+@media (prefers-reduced-motion: reduce){
+ html{scroll-behavior:auto}
+ *,*::before,*::after{
+  transition-duration:.01ms !important;
+  animation-duration:.01ms !important;
+  animation-iteration-count:1 !important;
+ }
+}
+
+/* paper. The selector list matches the specificity of the two dark blocks,
+   otherwise these rules parse and lose the cascade. */
+@media print{
+ :root,:root:not([data-theme="light"]),:root[data-theme="dark"]{
+  color-scheme: light;
+  --ink:#000; --muted:#333; --faint:#555;
+  --accent:#00408f; --accent-ink:#00306b; --accent-on:#000;
+  --bg:#fff; --panel:#fff; --line:#bbb; --rule:#000;
+  --good:#0a5c3b; --bad:#8a2f2a;
+  --plate:#fff; --plate-mat:transparent; --plate-ring:transparent; --mat:0px;
+  --logo-plate:transparent; --logo-pad:0; --logo-op:1;
+  --badge-bg:#fff; --badge-line:#999; --badge-ink:#333;
+  --hi-bg:#fff; --hi-line:#999;
+  --win-bg:#fff; --tag-bg:#fff; --fail-bg:#fff;
+  --focus:#00408f;
+ }
+ html,body{background:#fff !important;color:#000 !important}
+ .theme-toggle,.playnote,.clipwrap .replay{display:none !important}
+ .vid.best .tag{background:#fff !important;color:#000 !important;border:1px solid #666}
+ figure,table,.tbl-scroll,.vid{break-inside:avoid;page-break-inside:avoid}
+ h2,h3,caption{break-after:avoid;page-break-after:avoid}
+ .tbl-scroll{overflow:visible}
+}
 </style>
 </head>
 <body>
 
+<button id="theme-toggle" class="theme-toggle" type="button" hidden
+        aria-pressed="false" aria-label="Dark theme"
+        title="Dark theme. Shift-click or Shift+Enter to follow the system.">
+<svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.6M12 19v2.6M4.4 12H1.8M22.2 12h-2.6M6.3 6.3 4.5 4.5M19.5 19.5l-1.8-1.8M17.7 6.3l1.8-1.8M4.5 19.5l1.8-1.8"/></svg>
+<svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1z"/></svg>
+</button>
+
 <header class="wrap">
 <h1>Imitation Learning of Avoidance Modes<br>
 <span class="thin">for Computationally Efficient Multimodal MPC</span></h1>
-<p class="authors">Changyu Lee<sup>1</sup>, Byung-Kwan Lee<sup>2</sup>, and Kanghoon Yoon<sup>3</sup></p>
+<p class="authors">Changyu Lee<sup role="img" aria-label="affiliation 1, corresponding author">1,&dagger;</sup>, Byung-Kwan Lee<sup>2</sup>, and Kanghoon Yoon<sup>3</sup></p>
 <p class="affil"><sup>1</sup>Kongju National University &nbsp;·&nbsp; <sup>2</sup>NVIDIA Research &nbsp;·&nbsp; <sup>3</sup>KAIST</p>
+<p class="corr"><span aria-hidden="true">&dagger;</span> Corresponding author.</p>
 <div class="logos" aria-label="Affiliations">
 <a href="https://www.kongju.ac.kr" target="_blank" rel="noopener"><img class="seal" src="logos/logo_kongju.png" alt="Kongju National University"></a>
 <a href="https://www.nvidia.com/research" target="_blank" rel="noopener"><img class="word" src="logos/nvidia.svg" alt="NVIDIA Research"></a>
@@ -459,6 +610,81 @@ National Research Foundation of Korea (NRF) grant funded by the Korea government
   });
  }, { rootMargin: '200px 0px' });
  clips.forEach(function (v) { io.observe(v); });
+})();
+</script>
+
+<script>
+(function () {
+ var KEY = 'sidenet-mpc:theme', LIGHT = '#ffffff', DARK = '#12161c';
+ var root = document.documentElement;
+ var btn  = document.getElementById('theme-toggle');
+ var meta = document.querySelector('meta[name="theme-color"]');
+ var mq   = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+ if (!btn) return;
+
+ function stored() {
+  try {
+   var v = localStorage.getItem(KEY);
+   return (v === 'light' || v === 'dark') ? v : null;
+  } catch (e) { return null; }
+ }
+ function effective() {                       // the attribute is the applied state; storage may be blocked
+  var a = root.getAttribute('data-theme');
+  if (a === 'light' || a === 'dark') return a;
+  return (mq && mq.matches) ? 'dark' : 'light';
+ }
+
+ /* the CSS repaints itself; this only keeps the control and the browser UI honest */
+ function sync() {
+  var isDark = effective() === 'dark';
+  btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+  if (meta) meta.setAttribute('content', isDark ? DARK : LIGHT);
+ }
+ function apply(next) {                       // 'light' | 'dark' | null = follow the system
+  if (next) root.setAttribute('data-theme', next);
+  else root.removeAttribute('data-theme');
+  try { next ? localStorage.setItem(KEY, next) : localStorage.removeItem(KEY); }
+  catch (e) {}                                // blocked storage: the choice holds for this view
+  sync();
+ }
+
+ var timer;
+ function animated(fn) {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { fn(); return; }
+  root.classList.add('theme-anim');
+  fn();
+  clearTimeout(timer);
+  timer = setTimeout(function () { root.classList.remove('theme-anim'); }, 220);
+ }
+
+ btn.hidden = false;
+ sync();
+
+ btn.addEventListener('click', function (e) {
+  if (e.altKey || e.shiftKey) { animated(function () { apply(null); }); return; }
+  var next = effective() === 'dark' ? 'light' : 'dark';
+  animated(function () { apply(next); });
+ });
+
+ btn.addEventListener('keydown', function (e) {
+  if ((e.key === 'Enter' || e.key === ' ') && (e.shiftKey || e.altKey)) {
+   e.preventDefault();                        // stops the activation click too
+   animated(function () { apply(null); });
+  }
+ });
+
+ if (mq) {                                    // system flipped, no explicit choice made
+  var onSystem = function () { if (!root.getAttribute('data-theme')) sync(); };
+  if (mq.addEventListener) mq.addEventListener('change', onSystem);
+  else if (mq.addListener) mq.addListener(onSystem);
+ }
+
+ window.addEventListener('storage', function (e) {   // another tab changed it
+  if (e.key !== KEY && e.key !== null) return;
+  var v = stored();
+  if (v) root.setAttribute('data-theme', v); else root.removeAttribute('data-theme');
+  sync();
+ });
 })();
 </script>
 </body>
