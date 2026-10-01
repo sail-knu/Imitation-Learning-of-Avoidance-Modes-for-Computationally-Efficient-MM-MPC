@@ -242,6 +242,14 @@ ul.cross li::before{content:"\2013";background:none;width:auto;height:auto;top:-
 }
 .clip.done .replay{display:inline-flex}
 .clip .replay svg{width:13px;height:13px;fill:currentColor}
+/* hover guide on the corridor strip of a clip that jumps to the clicked x (training data) */
+.clip .jump{position:absolute;top:12.5%;height:25.7%;width:0;border-left:1.5px dashed rgba(29,29,31,.75);pointer-events:none;display:none}
+.clip .jump.on{display:block}
+.clip .jump span{
+ position:absolute;top:6px;left:6px;padding:5px 10px;border-radius:980px;white-space:nowrap;
+ background:rgba(29,29,31,.82);color:#fff;font:600 12px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+.clip .jump.flip span{left:auto;right:6px}
 .outcome{list-style:none;padding:12px 6px 2px}
 .outcome li{display:flex;align-items:center;gap:9px;font-size:14.5px;padding:4px 0;color:var(--ink)}
 .outcome li span.t{margin-left:auto;padding-left:10px;color:var(--ink-2);font-variant-numeric:tabular-nums;font-size:14px;white-space:nowrap}
@@ -524,8 +532,8 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
    </div>
   </div>
   <figure class="fig reveal mt2">
-   <div class="plate"><div class="clip"><video muted playsinline preload="none" poster="static/poster_planning_step.jpg" aria-label="One planning step at the same state: the expert solves sixteen candidate trajectories, SideNet-MPC solves two, and both execute the same maneuver"><source src="static/video_planning_step.mp4" type="video/mp4"></video></div></div>
-   <figcaption><b>One planning step.</b> At the same state, the expert solves all 16 modes and SideNet-MPC only the network proposal and the previous mode. The same selection rule keeps the previous mode for both, so the expert (red) and SideNet-MPC (blue) execute the same maneuver; candidates in grey. Logged solver output, Mixed traffic seed 477, click to replay.</figcaption>
+   <div class="plate"><div class="clip"><video muted playsinline preload="none" poster="static/poster_planning_step.jpg" aria-label="One planning step at the same state: the expert solves sixteen candidate trajectories, SideNet-MPC solves the network proposal and the previous mode, the proposal is accepted, and both execute the same maneuver"><source src="static/video_planning_step.mp4" type="video/mp4"></video></div></div>
+   <figcaption><b>One planning step.</b> At the same state, the expert solves all 16 modes and SideNet-MPC only the network proposal and the previous mode. The proposal is clearly cheaper than the previous mode, so the same selection rule switches both controllers to it: the expert (red) and SideNet-MPC (blue) execute the same maneuver; candidates in grey. SideNet-MPC drives Mixed traffic seed 441 and the expert is solved at the same state every period; click to replay.</figcaption>
   </figure>
  </div>
 </section>
@@ -603,8 +611,8 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
     </ul>
    </div>
    <figure class="fig reveal d2">
-    <div class="clip"><video muted playsinline preload="none" poster="static/poster_training_data.jpg" aria-label="One expert collection rollout, seed 366: the expert solves sixteen candidate plans every control period, and the side of each of the four ringed obstacles in the lowest-cost plan becomes the label"><source src="static/video_training_data.mp4" type="video/mp4"></video></div>
-    <figcaption><b>One collection rollout.</b> Every control period becomes one labelled step.</figcaption>
+    <div class="clip"><video data-jump muted playsinline preload="none" poster="static/poster_training_data.jpg" aria-label="One expert collection rollout, seed 366: the expert solves sixteen candidate plans every control period, and the side of each of the four ringed obstacles in the lowest-cost plan becomes the label"><source src="static/video_training_data.mp4" type="video/mp4"></video></div>
+    <figcaption><b>One collection rollout.</b> Every control period becomes one labelled step. Click anywhere on the clip to jump to that point of the corridor.</figcaption>
    </figure>
   </div>
  </div>
@@ -939,7 +947,7 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
    var p = v.play(); if (p && p.catch) p.catch(function () {});
   }
   v.addEventListener('ended', function () { wrap.classList.add('done'); });
-  v.addEventListener('click', play);
+  if (!v.hasAttribute('data-jump')) v.addEventListener('click', play);
   btn.addEventListener('click', play);
   v._play = play;
  });
@@ -950,6 +958,60 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
   entries.forEach(function (en) { if (en.isIntersecting) { io.unobserve(en.target); en.target._play(); } });
  }, { threshold: 0.5 });
  vids.forEach(function (v) { io.observe(v); });
+})();
+
+/* ---------- training-data clip: a click anywhere jumps to the moment the expert first reaches
+   the corridor x under the cursor and plays from there. Frame geometry from render/data_video.py:
+   the overview axes span 0.03-0.97 of the frame width for x = -3..153 m, and the clip runs at
+   2x real time. TS[i] = first time [s] the expert reaches x = i m in
+   case17_seed366_ac_r40nb_K16_o18_42_N40.npz, which ends at x = 145.24 m, t = 72.6 s. ---------- */
+(function () {
+ var v = document.querySelector('.clip video[data-jump]');
+ if (!v) return;
+ var TS = [0.0, 0.4, 0.82, 1.24, 1.68, 2.12, 2.58, 3.04, 3.5, 3.98, 4.47, 4.97, 5.5, 6.06, 6.67, 7.32,
+  7.99, 8.86, 9.85, 16.88, 17.55, 18.13, 18.68, 19.21, 19.69, 20.15, 20.59, 21.01, 21.41, 21.81, 22.21,
+  22.61, 23.01, 23.41, 23.82, 24.22, 24.62, 25.01, 25.42, 25.82, 26.22, 26.63, 27.04, 27.44, 27.84,
+  28.24, 28.64, 29.04, 29.44, 29.84, 30.24, 30.64, 31.04, 31.44, 31.84, 32.25, 32.65, 33.06, 33.47,
+  33.89, 34.32, 34.78, 35.25, 35.75, 36.27, 36.81, 37.41, 38.08, 38.83, 39.7, 40.73, 41.69, 42.37,
+  42.85, 43.28, 43.72, 44.19, 44.68, 45.17, 45.64, 46.08, 46.5, 46.91, 47.31, 47.71, 48.1, 48.5,
+  48.89, 49.28, 49.67, 50.07, 50.46, 50.85, 51.25, 51.64, 52.03, 52.43, 52.82, 53.21, 53.61, 54.01,
+  54.41, 54.81, 55.22, 55.62, 56.02, 56.42, 56.82, 57.21, 57.6, 57.99, 58.38, 58.76, 59.15, 59.54,
+  59.93, 60.33, 60.73, 61.13, 61.51, 61.89, 62.28, 62.63, 62.97, 63.31, 63.66, 64.02, 64.41, 64.81,
+  65.23, 65.67, 66.1, 66.52, 66.92, 67.33, 67.76, 68.2, 68.66, 69.11, 69.57, 70.02, 70.48, 70.95,
+  71.43, 71.93, 72.47];
+ var X_END = 145.24, T_END = 72.6, SPEED = 2;
+ var wrap = v.parentNode;
+ function corridorX(e) {
+  var r = v.getBoundingClientRect();
+  return ((e.clientX - r.left) / r.width - 0.03) / 0.94 * 156 - 3;
+ }
+ function timeAt(x) {
+  if (x <= 0) return 0;
+  if (x >= X_END) return T_END;
+  var i = Math.floor(x), last = i + 1 >= TS.length;
+  var x1 = last ? X_END : i + 1, t1 = last ? T_END : TS[i + 1];
+  return TS[i] + (x - i) / (x1 - i) * (t1 - TS[i]);
+ }
+ function jump(t) {
+  wrap.classList.remove('done');
+  if (v.preload === 'none') v.preload = 'auto';
+  var seek = function () { try { v.currentTime = t / SPEED; } catch (e) {} };
+  if (v.readyState >= 1) seek(); else v.addEventListener('loadedmetadata', seek, { once: true });
+  var p = v.play(); if (p && p.catch) p.catch(function () {});
+ }
+ v.addEventListener('click', function (e) { jump(timeAt(corridorX(e))); });
+ var guide = document.createElement('div'), lab = document.createElement('span');
+ guide.className = 'jump'; guide.setAttribute('aria-hidden', 'true');
+ guide.appendChild(lab); wrap.appendChild(guide);
+ v.addEventListener('pointermove', function (e) {
+  if (e.pointerType !== 'mouse') return;
+  var x = Math.max(0, Math.min(X_END, corridorX(e))), f = 0.03 + 0.94 * (x + 3) / 156;
+  guide.style.left = (100 * f) + '%';
+  guide.classList.toggle('flip', f > 0.8);
+  lab.textContent = 'x = ' + Math.round(x) + ' m';
+  guide.classList.add('on');
+ });
+ v.addEventListener('pointerleave', function () { guide.classList.remove('on'); });
 })();
 
 /* ---------- replay pickers: one tab group per .mix block (arrow keys move between tabs) ---------- */
