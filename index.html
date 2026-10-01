@@ -156,6 +156,7 @@ sub,sup{font-size:.68em;line-height:0}
 .authors sup,.affil sup{font-size:.62em;position:relative;top:-.5em;vertical-align:baseline;margin-left:1px}
 .affil{margin-top:6px;color:var(--ink-2);font-size:16px}
 .corr{margin-top:4px;color:var(--ink-3);font-size:14px}
+.authors,.affil,.corr{text-align:right}
 .hero-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:26px;margin-top:40px}
 .links{display:flex;gap:12px;flex-wrap:wrap}
 .btn{
@@ -174,15 +175,14 @@ sub,sup{font-size:.68em;line-height:0}
 .logos .word.kaist{height:40px}
 
 /* ---------- stat band ---------- */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:10px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:10px}
 .stat{background:var(--band-card);border:1px solid var(--band-line);border-radius:22px;padding:28px 24px 26px}
 .stat .big{font-size:clamp(38px,4.2vw,54px);font-weight:700;letter-spacing:-.035em;line-height:1;white-space:nowrap}
 .stat .big .u{font-size:.5em;letter-spacing:-.01em;margin-left:.12em}
 .stat .lbl{margin-top:14px;font-size:15.5px;color:var(--band-ink-2);line-height:1.45}
 .stat .lbl b{color:var(--band-ink);font-weight:600}
 .band-note{margin-top:22px;font-size:14px;color:var(--band-ink-2)}
-@media (max-width:980px){.stats{grid-template-columns:1fr 1fr}}
-@media (max-width:520px){.stats{grid-template-columns:1fr}}
+@media (max-width:760px){.stats{grid-template-columns:1fr}}
 
 /* ---------- cards, figures ---------- */
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
@@ -190,6 +190,13 @@ sub,sup{font-size:.68em;line-height:0}
 .cols{display:grid;grid-template-columns:1.1fr 1fr;gap:44px;align-items:center}
 .cols.rev{grid-template-columns:1fr 1.15fr}
 @media (max-width:860px){.grid2,.grid3,.cols,.cols.rev{grid-template-columns:1fr}}
+.cols.data-cols{grid-template-columns:190px 1fr;gap:36px}
+.dfacts{list-style:none}
+.dfacts li{padding:16px 0;border-top:1px solid var(--line)}
+.dfacts li:first-child{border-top:0;padding-top:0}
+.dfacts b{display:block;font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.1;color:var(--ink);white-space:nowrap}
+.dfacts span{display:block;margin-top:5px;font-size:14.5px;line-height:1.4;color:var(--ink-2)}
+@media (max-width:860px){.cols.data-cols{grid-template-columns:1fr;gap:22px}.dfacts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.dfacts li,.dfacts li:first-child{border-top:0;padding:0}.dfacts b{font-size:24px}}
 .card{background:var(--card);border:1px solid var(--card-line);border-radius:24px;padding:28px 28px 26px;box-shadow:var(--shadow)}
 .s-white .card{background:var(--bg-alt);box-shadow:none}
 .card h3{margin-bottom:10px}
@@ -265,6 +272,8 @@ ul.cross li::before{content:"\2013";background:none;width:auto;height:auto;top:-
 .mix-foot .outcome{padding:0}
 .outcome li span.t b{color:var(--ink);font-weight:700}
 @media (max-width:760px){.mix{padding:16px 14px 14px}.mix-foot{grid-template-columns:1fr}.seg button{padding:8px 13px;font-size:13.5px}}
+/* scene names are longer than seed labels: on phones the three tabs share the row and may wrap */
+@media (max-width:560px){#scene-replays .mix-ctl{width:100%}#scene-replays .seg{display:flex;width:100%}#scene-replays .seg button{flex:1 1 0;min-width:0;white-space:normal;line-height:1.2;padding:8px 6px;text-align:center}}
 
 /* ---------- charts (emphasis: one accent, rest gray) ---------- */
 .chart{background:var(--card);border:1px solid var(--card-line);border-radius:22px;padding:24px 26px 20px;box-shadow:var(--shadow);position:relative}
@@ -298,6 +307,60 @@ ul.cross li::before{content:"\2013";background:none;width:auto;height:auto;top:-
 }
 .tip.on{opacity:1}
 .tip b{display:block;font-size:15px}
+
+/* ---------- SideNet forward-pass animation ---------- */
+.sn{padding:18px 18px 14px}
+.sn-bar{display:flex;align-items:center;justify-content:space-between;gap:12px 18px;flex-wrap:wrap;padding:2px 2px 14px}
+.sn-steps{list-style:none;display:flex;flex-wrap:wrap;gap:4px}
+.sn-steps button{display:inline-flex;align-items:center;gap:8px;border:0;background:transparent;color:var(--ink-3);font:600 14px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:6px 13px 6px 6px;border-radius:980px;cursor:pointer;white-space:nowrap;transition:color .2s,background-color .2s}
+.sn-steps button:hover{color:var(--ink)}
+.sn-steps .d{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--line);color:var(--ink-2);transition:background-color .2s,color .2s}
+.sn-steps button.done{color:var(--ink-2)}
+.sn-steps button[aria-current="step"]{color:var(--ink);background:var(--blue-soft)}
+.sn-steps button[aria-current="step"] .d{background:var(--blue);color:#fff}
+.sn-ctl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.seg button[aria-checked="true"]{background:var(--seg-on);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.sn-play{min-width:92px;justify-content:center}
+.sn-play .i-play{display:none}
+.sn-play[data-state="paused"] .i-play{display:inline}
+.sn-play[data-state="paused"] .i-pause{display:none}
+.sn-play .i-play,.sn-play .i-pause{fill:currentColor;stroke:none}
+.sn-stage{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:10px;line-height:0}
+.sn-stage svg{display:block;width:100%;height:auto;margin:0 auto;overflow:visible}
+.sn-stage.tall svg{max-width:560px}
+.sn svg text{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Arial,sans-serif;line-height:normal}
+.sn .x-t1{fill:var(--ink);font-weight:600}
+.sn .x-t2{fill:var(--ink-2)}
+.sn .x-t3{fill:var(--ink-3)}
+.sn .x-blue{fill:var(--blue);font-weight:600}
+.sn .x-panel{fill:var(--bg-alt)}
+.sn .x-blk{fill:var(--card);stroke:var(--line-2);stroke-width:1.2}
+.sn .x-on{fill:var(--blue-soft);stroke:var(--blue);stroke-width:1.5}
+.sn .x-cl{stroke:var(--line-2);stroke-width:1.2;stroke-dasharray:5 5}
+.sn .x-flow{stroke:var(--line-2);stroke-width:1.6;fill:none}
+.sn .x-mk{fill:var(--ink-2)}
+.sn .x-mk2{fill:var(--line-2)}
+.sn .x-ego{fill:var(--ink)}
+.sn .x-rs{fill:none;stroke:var(--ink-3);stroke-width:1;stroke-dasharray:3 3}
+.sn .x-obs{fill:#ff9f0a;fill-opacity:.3}
+.sn .x-vel{stroke:var(--ink-2);stroke-width:1.5}
+.sn .x-ghost{fill:none;stroke:var(--ink-3);stroke-width:1.4;stroke-dasharray:4 3}
+.sn .x-brk{stroke:var(--blue);fill:none;stroke-linecap:round}
+.sn .x-cell{fill:var(--ink-3)}
+.sn .x-edge{stroke:var(--ink-3);stroke-linecap:round}
+.sn .x-edge.hot{stroke:var(--blue)}
+.sn .x-link{fill:none;stroke-width:1.6}
+.sn .x-axis{stroke:var(--line-2);stroke-width:1.2}
+.sn .x-track{stroke:var(--line);stroke-width:1}
+.sn .x-badge{fill:var(--card)}
+.sn .x-path{fill:none;stroke:var(--blue);stroke-linecap:round;stroke-linejoin:round}
+.sn-prog{height:3px;border-radius:3px;background:var(--line);margin:12px 2px 0;overflow:hidden}
+.sn-prog span{display:block;height:100%;width:0;background:var(--grad-blue)}
+.sn figcaption .sn-note{color:var(--ink-3)}
+.sn-paper{padding:4px 6px 0}
+.sn-paper summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--blue);padding:6px 0;width:max-content}
+.sn-paper .plate{margin-top:8px}
+@media (max-width:760px){.sn{padding:14px 12px 12px}.sn-stage{padding:6px}.sn-steps button{font-size:13px;padding:5px 10px 5px 5px}}
 
 /* ---------- table ---------- */
 .tbl{overflow-x:auto;border-radius:20px}
@@ -351,9 +414,9 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
   <ul>
    <li><a href="#method">Method</a></li>
    <li><a href="#network">Network</a></li>
+   <li><a href="#mechanism">Mechanism</a></li>
    <li><a href="#scenes">Scenes</a></li>
    <li><a href="#results">Results</a></li>
-   <li><a href="#mechanism">Mechanism</a></li>
   </ul>
   <button id="theme-toggle" class="theme-toggle" type="button" hidden aria-pressed="false"
           aria-label="Dark theme" title="Dark theme. Shift-click to follow the system.">
@@ -401,12 +464,10 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
    <h2 id="glance-h">Faster on one core than the expert on sixteen, <span class="grad">at 93% of its success</span></h2>
   </div>
   <div class="stats">
-   <div class="stat reveal"><div class="big grad-blue">20.9<span class="u">ms</span></div><div class="lbl"><b>per control period</b> on one core</div></div>
-   <div class="stat reveal d2"><div class="big grad-blue">&minus;43%</div><div class="lbl"><b>computation</b> vs. the expert's 36.9&nbsp;ms on 16 threads</div></div>
+   <div class="stat reveal"><div class="big grad-blue">18.6<span class="u">ms</span></div><div class="lbl"><b>per control period</b> on one core</div></div>
+   <div class="stat reveal d2"><div class="big grad-blue">&minus;48%</div><div class="lbl"><b>computation</b> vs. the expert's 35.5&nbsp;ms on 16 threads</div></div>
    <div class="stat reveal d3"><div class="big grad-blue">93%</div><div class="lbl"><b>of the expert's successes</b>, 90 vs. 97 (<i class="v">p</i>&nbsp;=&nbsp;0.065)</div></div>
-   <div class="stat reveal d4"><div class="big grad-blue">3.2&ndash;3.5<span class="u">m</span></div><div class="lbl"><b>side-reversal gap</b>, the expert's own interval</div></div>
   </div>
-  <p class="band-note reveal">100 seed-matched runs of mixed traffic per controller.</p>
  </div>
 </section>
 
@@ -447,7 +508,7 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
    <div class="arrow" aria-hidden="true">&rsaquo;</div>
    <div class="step" role="listitem"><div class="n">4</div><h3>Solve</h3><p>At most two TC-CBF constrained OCPs.</p></div>
    <div class="arrow" aria-hidden="true">&rsaquo;</div>
-   <div class="step" role="listitem"><div class="n">5</div><h3>Arbitrate</h3><p>The lower cost is executed.</p></div>
+   <div class="step" role="listitem"><div class="n">5</div><h3>Arbitrate</h3><p>The expert's rule keeps the previous mode unless the proposal is clearly cheaper.</p></div>
   </div>
   <div class="cols mt2">
    <figure class="fig reveal">
@@ -463,8 +524,8 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
    </div>
   </div>
   <figure class="fig reveal mt2">
-   <div class="plate"><img src="static/motv_snap.png" alt="Candidate and executed trajectories of the expert and of SideNet-MPC at one planning step" loading="lazy"></div>
-   <figcaption><b>One planning step.</b> The expert (red) and SideNet-MPC (blue) execute the same maneuver; candidates in grey.</figcaption>
+   <div class="plate"><div class="clip"><video muted playsinline preload="none" poster="static/poster_planning_step.jpg" aria-label="One planning step at the same state: the expert solves sixteen candidate trajectories, SideNet-MPC solves two, and both execute the same maneuver"><source src="static/video_planning_step.mp4" type="video/mp4"></video></div></div>
+   <figcaption><b>One planning step.</b> At the same state, the expert solves all 16 modes and SideNet-MPC only the network proposal and the previous mode. The same selection rule keeps the previous mode for both, so the expert (red) and SideNet-MPC (blue) execute the same maneuver; candidates in grey. Logged solver output, Mixed traffic seed 477, click to replay.</figcaption>
   </figure>
  </div>
 </section>
@@ -477,14 +538,51 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
    <h2 id="network-h">Edges carry the gap the vehicle will actually meet</h2>
    <p class="lede">A neighbor can close the gap an isolated side choice would use, so SideNet links the branch obstacles in a complete graph with pair-gap edges.</p>
   </div>
-  <figure class="fig reveal">
-   <div class="plate"><img src="static/fig_sidenet.png" alt="SideNet: shared node embedding, two edge-conditioned message-passing layers on a complete graph of four branch obstacles, and a shared head with one logit per obstacle" loading="lazy"></div>
-   <figcaption><b>SideNet.</b> Shared embedding, two edge-conditioned message-passing layers, one side logit per branch obstacle.</figcaption>
+  <figure class="fig sn reveal" id="sidenet-anim" aria-labelledby="sn-cap">
+   <div class="sn-bar">
+    <ol class="sn-steps" aria-label="Stages of one forward pass">
+     <li><button type="button"><span class="d">1</span>Embed</button></li>
+     <li><button type="button"><span class="d">2</span>Pair gaps</button></li>
+     <li><button type="button"><span class="d">3</span>Message passing</button></li>
+     <li><button type="button"><span class="d">4</span>Read out</button></li>
+    </ol>
+    <div class="sn-ctl">
+     <div class="seg sn-gap" role="radiogroup" aria-label="Gap between b1 and its partner b2">
+      <button type="button" role="radio" aria-checked="true" data-wide="0">Narrow gap</button>
+      <button type="button" role="radio" aria-checked="false" data-wide="1" tabindex="-1">Wide gap</button>
+     </div>
+     <button type="button" class="fs-btn sn-play" data-state="playing"><svg class="i-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/></svg><svg class="i-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.3v11.4L13.5 8z"/></svg><span>Pause</span></button>
+    </div>
+   </div>
+   <div class="sn-stage"><svg role="img" aria-label="Animated SideNet forward pass: four branch obstacles are embedded by a shared MLP, linked in a complete graph whose edges carry the gap at the encounter time, updated by two message-passing layers, and read out by a shared head as one side logit each." xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 330"></svg></div>
+   <div class="sn-prog" aria-hidden="true"><span></span></div>
+   <figcaption id="sn-cap"><b>SideNet, one forward pass.</b> <span class="sn-live" aria-live="off">A shared MLP embeds the 12 inputs of each branch obstacle into a node feature.</span> <span class="sn-note">Schematic scene with illustrative logits; switch the gap to see the side of b<sub>1</sub> reverse, as in the gap sweep below.</span></figcaption>
+   <details class="sn-paper"><summary>Paper figure</summary><div class="plate"><img src="static/fig_sidenet.png" alt="SideNet: shared node embedding, two edge-conditioned message-passing layers on a complete graph of four branch obstacles, and a shared head with one logit per obstacle" loading="lazy"></div></details>
   </figure>
   <div class="grid3 mt">
    <div class="card reveal"><span class="k">NODES</span><h3>One slot per obstacle</h3><p>Relative position, velocity and radius, plus the ego state. Permutation-equivariant.</p></div>
    <div class="card reveal d2"><span class="k">EDGES</span><h3>Gap at the encounter</h3><p>Current gap, gap at the encounter time, and closing rate.</p></div>
-   <div class="card reveal d3"><span class="k">SIZE</span><h3>Small and fast</h3><p>94,851 parameters, under 0.1&nbsp;ms per forward pass on one core.</p></div>
+   <div class="card reveal d3"><span class="k">SIZE</span><h3>Small and fast</h3><p>94,851 parameters, 0.4&nbsp;ms per forward pass on one core.</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- ============================ mechanism ============================ -->
+<section id="mechanism" class="s-band" aria-labelledby="mech-h">
+ <div class="wrap">
+  <div class="head reveal">
+   <div class="eyebrow">Why pairwise edges</div>
+   <h2 id="mech-h">Only the graph proposer reverses the side, <span class="grad">and where the expert does</span></h2>
+   <p class="lede">The partner obstacle slides away, widening the pair gap from 0.3 to 7.4&nbsp;m. The expert switches sides between 3.22 and 3.54&nbsp;m.</p>
+  </div>
+  <figure class="fig reveal">
+   <div class="plate"><img src="static/fig_gapcurve.png" alt="Branch logit of the lead obstacle against the pair gap for SideNet-MPC, Slot-MLP and Deep-set, with four scene snapshots showing the modes SideNet and Slot-MLP propose" loading="lazy"></div>
+   <figcaption><b>Side logit against the pair gap.</b> Shading: the expert's side; dashed: <i class="v">w</i><sub>s</sub> = 3.4&nbsp;m. Right: modes proposed by SideNet (solid) and Slot-MLP (dash-dotted) at four gaps.</figcaption>
+  </figure>
+  <div class="readout">
+   <div class="reveal"><b>Slot-MLP</b><span>Constant +1.403, and +1.184 for Slot-MLP-wide: the partner is not an input.</span></div>
+   <div class="reveal d2"><b>Deep-set</b><span>Falls from +1.533 to +0.755 as the gap widens, but never changes side.</span></div>
+   <div class="reveal d3 acc"><b>SideNet</b><span>&minus;1.322 to +1.862, crossing zero at 3.22&ndash;3.54&nbsp;m.</span></div>
   </div>
  </div>
 </section>
@@ -496,21 +594,17 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
    <div class="eyebrow">Training data</div>
    <h2 id="data-h">Supervision from the expert's own cost records</h2>
   </div>
-  <div class="cols rev">
+  <div class="cols data-cols">
    <div class="reveal">
-    <ul class="clean">
-     <li>77,925 steps from 210 expert rollouts, labelled by the arg-min of the sixteen recorded costs.</li>
-     <li>Left&ndash;right reflection doubles the training split to 126,066 steps.</li>
-     <li>1,888 pair-band steps (1.5%) target the side threshold; only SideNet uses them.</li>
+    <ul class="dfacts">
+     <li><b>77,925</b><span>steps from 210 expert rollouts</span></li>
+     <li><b>16&thinsp;&rarr;&thinsp;1</b><span>label = lowest of the 16 recorded costs</span></li>
+     <li><b>&times;2</b><span>left&ndash;right mirror</span></li>
     </ul>
-    <figure class="fig mt">
-     <div class="plate"><img src="static/fig_simenv_a.png" alt="Collection corridor with 18 static and 42 dynamic obstacles" loading="lazy"></div>
-     <figcaption><b>Collection corridor.</b> 18 static and 42 dynamic obstacles.</figcaption>
-    </figure>
    </div>
    <figure class="fig reveal d2">
-    <div class="plate"><img src="static/fig_pair_band.png" alt="Pair-band augmentation: one episode with the hull and bumper widths placed in the gap, and the ten catalog entries along the gap axis" loading="lazy"></div>
-    <figcaption><b>Pair-band augmentation.</b> Ten short episodes with pair gaps around the hull width 2<i class="v">R</i><sub>s</sub> and the bumper-inclusive width <i class="v">w</i><sub>s</sub>.</figcaption>
+    <div class="clip"><video muted playsinline preload="none" poster="static/poster_training_data.jpg" aria-label="One expert collection rollout, seed 366: the expert solves sixteen candidate plans every control period, and the side of each of the four ringed obstacles in the lowest-cost plan becomes the label"><source src="static/video_training_data.mp4" type="video/mp4"></video></div>
+    <figcaption><b>One collection rollout.</b> Every control period becomes one labelled step.</figcaption>
    </figure>
   </div>
  </div>
@@ -522,39 +616,59 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
   <div class="head reveal">
    <div class="eyebrow">Closed-loop evaluation</div>
    <h2 id="scenes-h">Three deterministic scenes</h2>
-   <p class="lede">Baselines change only the proposer: Slot-MLP and Slot-MLP-wide see one obstacle at a time, Deep-set pools them without pair edges.</p>
+   <p class="lede">Baselines change only the proposer and share the training data: Slot-MLP and Slot-MLP-wide see one obstacle at a time, Deep-set pools them without pair edges.</p>
   </div>
 
-  <div class="grid3">
-   <figure class="vid reveal">
-    <div class="vh"><h3>Closing gate</h3><span>Narrows from 8 to 2&nbsp;m</span></div>
-    <div class="clip"><video muted playsinline preload="none" poster="static/poster_closing_gate.jpg" aria-label="Closing gate: expert, SideNet-MPC and Slot-MLP on identical traffic"><source src="static/video_closing_gate.mp4" type="video/mp4"></video></div>
-    <ul class="outcome">
-     <li><span class="chip ok" aria-hidden="true">&#10003;</span>Expert<span class="t">21.4 s &middot; 0.54 m</span></li>
-     <li><span class="chip ok" aria-hidden="true">&#10003;</span>SideNet-MPC<span class="t">19.8 s &middot; 0.57 m</span></li>
-     <li><span class="chip ok" aria-hidden="true">&#10003;</span>Slot-MLP, early pass<span class="t">16.6 s &middot; 0.14 m</span></li>
-    </ul>
-   </figure>
-   <figure class="vid reveal d2">
-    <div class="vh"><h3>Staggered gates</h3><span>Three 2.6&nbsp;m gates</span></div>
-    <div class="clip"><video muted playsinline preload="none" poster="static/poster_staggered_gates.jpg" aria-label="Staggered gates: expert and SideNet-MPC arrive, Slot-MLP stops in front of the second gate"><source src="static/video_staggered_gates.mp4" type="video/mp4"></video></div>
-    <ul class="outcome">
-     <li><span class="chip ok" aria-hidden="true">&#10003;</span>Expert<span class="t">52.0 s</span></li>
-     <li><span class="chip ok" aria-hidden="true">&#10003;</span>SideNet-MPC<span class="t">52.2 s</span></li>
-     <li><span class="chip no" aria-hidden="true">&#10005;</span>Slot-MLP, deadlock at gate 2<span class="t">timeout</span></li>
-    </ul>
-   </figure>
-   <figure class="vid reveal d3">
-    <div class="vh"><h3>Obstacle and gate</h3><span>Hull-wide gate</span></div>
-    <div class="clip"><video muted playsinline preload="none" poster="static/poster_chicane.jpg" aria-label="Obstacle and gate: all three controllers arrive"><source src="static/video_chicane.mp4" type="video/mp4"></video></div>
-    <ul class="outcome">
-     <li><span class="chip ok" aria-hidden="true">&#10003;</span>Expert<span class="t">29.4 s</span></li>
-     <li><span class="chip ok" aria-hidden="true">&#10003;</span>SideNet-MPC<span class="t">29.4 s</span></li>
-     <li><span class="chip ok" aria-hidden="true">&#10003;</span>Slot-MLP<span class="t">29.4 s</span></li>
-    </ul>
-   </figure>
+  <div class="mix reveal" id="scene-replays">
+   <div class="mix-head">
+    <div>
+     <h3>The three scenes, replayed</h3>
+     <p class="unit">Each scene gives the three controllers identical obstacles. Trails run from red at the start to violet at the end; rings mark the obstacles whose sides are being decided.</p>
+    </div>
+    <div class="mix-ctl">
+    <div class="seg" role="tablist" aria-label="Deterministic scene">
+     <button type="button" role="tab" id="st-closing" aria-controls="sp-closing" aria-selected="true">Closing gate</button>
+     <button type="button" role="tab" id="st-staggered" aria-controls="sp-staggered" aria-selected="false" tabindex="-1">Staggered gates</button>
+     <button type="button" role="tab" id="st-obstacle" aria-controls="sp-obstacle" aria-selected="false" tabindex="-1">Obstacle and gate</button>
+    </div>
+    <button type="button" class="fs-btn" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg>Full screen</button>
+    </div>
+   </div>
+   <div class="mix-panel" role="tabpanel" id="sp-closing" aria-labelledby="st-closing">
+    <div class="clip"><video muted playsinline preload="none" poster="static/poster_closing_gate.jpg" aria-label="Closing gate: the expert and SideNet-MPC go around the lower obstacle on the same path; Slot-MLP speeds up and slips through the closing gap"><source src="static/video_closing_gate.mp4" type="video/mp4"></video></div>
+    <div class="mix-foot">
+     <p class="mix-sum"><b>Around, or through before it shuts.</b> The gate narrows from 8 to 2&nbsp;m as the vehicle arrives. The expert and SideNet-MPC go around the lower obstacle on the same path. Slot-MLP speeds up to 3.5&nbsp;m/s and slips through the closing gap with 0.14&nbsp;m to spare.</p>
+     <ul class="outcome">
+      <li><span class="chip ok" aria-hidden="true">&#10003;</span>Expert<span class="t">19.8 s &middot; 0.57 m</span></li>
+      <li><span class="chip ok" aria-hidden="true">&#10003;</span>SideNet-MPC<span class="t">19.8 s &middot; 0.57 m</span></li>
+      <li><span class="chip ok" aria-hidden="true">&#10003;</span>Slot-MLP, early pass<span class="t">16.6 s &middot; 0.14 m</span></li>
+     </ul>
+    </div>
+   </div>
+   <div class="mix-panel" role="tabpanel" id="sp-staggered" aria-labelledby="st-staggered" hidden>
+    <div class="clip"><video muted playsinline preload="none" poster="static/poster_staggered_gates.jpg" aria-label="Staggered gates: the expert and SideNet-MPC bypass all three gates; Slot-MLP stops in front of the first gate"><source src="static/video_staggered_gates.mp4" type="video/mp4"></video></div>
+    <div class="mix-foot">
+     <p class="mix-sum"><b>Every gate must be bypassed.</b> Each 2.6&nbsp;m gap is narrower than the vehicle needs. The expert and SideNet-MPC go around all three gates. Slot-MLP aims at the blocked gap of the first gate and stops in front of it at 19&nbsp;s, where it stays until the 150&nbsp;s timeout.</p>
+     <ul class="outcome">
+      <li><span class="chip ok" aria-hidden="true">&#10003;</span>Expert<span class="t">52.0 s</span></li>
+      <li><span class="chip ok" aria-hidden="true">&#10003;</span>SideNet-MPC<span class="t">52.2 s</span></li>
+      <li><span class="chip no" aria-hidden="true">&#10005;</span>Slot-MLP, deadlock at gate 1<span class="t">timeout</span></li>
+     </ul>
+    </div>
+   </div>
+   <div class="mix-panel" role="tabpanel" id="sp-obstacle" aria-labelledby="st-obstacle" hidden>
+    <div class="clip"><video muted playsinline preload="none" poster="static/poster_chicane.jpg" aria-label="Obstacle and gate: the expert and SideNet-MPC bypass the gate on the left; Slot-MLP steers into the blocked gap and stops"><source src="static/video_chicane.mp4" type="video/mp4"></video></div>
+    <div class="mix-foot">
+     <p class="mix-sum"><b>Stay on the open side.</b> All three pass the first obstacle on the left. Once the gate&rsquo;s second obstacle comes into play, the expert and SideNet-MPC bypass the gate on the left as well. Slot-MLP heads back toward the path, steers into the hull-wide gap and stops in front of it at <i class="v">x</i>&nbsp;&asymp;&nbsp;42&nbsp;m.</p>
+     <ul class="outcome">
+      <li><span class="chip ok" aria-hidden="true">&#10003;</span>Expert<span class="t">29.4 s</span></li>
+      <li><span class="chip ok" aria-hidden="true">&#10003;</span>SideNet-MPC<span class="t">29.4 s</span></li>
+      <li><span class="chip no" aria-hidden="true">&#10005;</span>Slot-MLP, deadlock at the gap<span class="t">timeout</span></li>
+     </ul>
+    </div>
+   </div>
   </div>
-  <p class="note">Arrival time &middot; minimum clearance. Identical traffic, 4.8&times; real time, click to replay. Slot-MLP-wide and Deep-set also time out at the staggered gates.</p>
+  <p class="note">Arrival time &middot; minimum clearance. The closing gate plays at 2&times; real time and the other two at 3&times;; those two replays end shortly after the expert arrives, while Slot-MLP stays stopped until the 150&nbsp;s timeout. Click to replay. Slot-MLP-wide and Deep-set take the same early pass at the closing gate and also time out at the staggered gates (Deep-set at gate 1, Slot-MLP-wide at gate 2); at the obstacle and gate, Slot-MLP-wide times out and Deep-set arrives at 29.4&nbsp;s.</p>
  </div>
 </section>
 
@@ -582,15 +696,15 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
     <caption class="sr">Closed-loop Monte Carlo results on mixed traffic, 100 seeds</caption>
     <thead><tr><th scope="col">Controller</th><th scope="col">Parameters</th><th scope="col">Success</th><th scope="col">Collision</th><th scope="col">Timeout</th><th scope="col">Arrival [s]</th><th scope="col">Time [ms]</th></tr></thead>
     <tbody>
-     <tr><td>Expert (16 OCPs)</td><td>&mdash;</td><td>97</td><td>3</td><td>0</td><td>37.3 &plusmn; 9.1</td><td>36.9</td></tr>
-     <tr class="hl"><td>SideNet-MPC</td><td>94,851</td><td>90</td><td>10</td><td>0</td><td>35.5 &plusmn; 7.4</td><td>20.9</td></tr>
-     <tr><td>Slot-MLP</td><td>9,217</td><td>82</td><td>16</td><td>2</td><td>34.3 &plusmn; 7.0</td><td>19.7</td></tr>
-     <tr><td>Slot-MLP-wide</td><td>95,017</td><td>81</td><td>18</td><td>1</td><td>34.8 &plusmn; 6.6</td><td>21.0</td></tr>
-     <tr><td>Deep-set</td><td>17,473</td><td>77</td><td>23</td><td>0</td><td>34.5 &plusmn; 6.0</td><td>21.3</td></tr>
+     <tr><td>Expert (16 OCPs)</td><td>&mdash;</td><td>97</td><td>3</td><td>0</td><td>37.3 &plusmn; 9.1</td><td>35.5</td></tr>
+     <tr class="hl"><td>SideNet-MPC</td><td>94,851</td><td>90</td><td>10</td><td>0</td><td>35.5 &plusmn; 7.4</td><td>18.6</td></tr>
+     <tr><td>Slot-MLP</td><td>9,217</td><td>82</td><td>18</td><td>0</td><td>35.7 &plusmn; 8.4</td><td>19.0</td></tr>
+     <tr><td>Slot-MLP-wide</td><td>95,017</td><td>83</td><td>17</td><td>0</td><td>35.5 &plusmn; 8.4</td><td>19.2</td></tr>
+     <tr><td>Deep-set</td><td>17,473</td><td>80</td><td>20</td><td>0</td><td>34.7 &plusmn; 5.9</td><td>19.1</td></tr>
     </tbody>
    </table>
   </div>
-  <p id="tbl-note" class="tbl-note">Arrival averages successful runs. Expert: 16 OCPs on 16 threads; learned rows: at most two on one core (Intel Core Ultra&nbsp;7 270K). McNemar <i class="v">p</i> vs. SideNet-MPC: expert 0.065, Slot-MLP 0.039, Slot-MLP-wide 0.064, Deep-set 0.011.</p>
+  <p id="tbl-note" class="tbl-note">Arrival averages successful runs. Expert: 16 OCPs on 16 threads; learned rows: at most two on one core (Intel Core Ultra&nbsp;7 270K Plus), all timed in one session. McNemar <i class="v">p</i> vs. SideNet-MPC: expert 0.065, Slot-MLP 0.096, Slot-MLP-wide 0.118, Deep-set 0.052.</p>
 
   <figure class="fig reveal mt2">
    <div class="plate"><img src="static/fig_mc_grid.png" alt="Two Monte Carlo seeds frozen two seconds before Slot-MLP collides, with the predicted paths of the expert, SideNet-MPC and Slot-MLP" loading="lazy"></div>
@@ -612,60 +726,40 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
     </div>
    </div>
    <div class="mix-panel" role="tabpanel" id="mp-479" aria-labelledby="mt-479">
-    <div class="clip"><video muted playsinline preload="none" poster="static/poster_mixed_seed479.jpg" aria-label="Seed 479: the expert and SideNet-MPC take the same path below the crossing obstacles; Slot-MLP collides at 12.2 seconds"><source src="static/video_mixed_seed479.mp4" type="video/mp4"></video></div>
+    <div class="clip"><video muted playsinline preload="none" poster="static/poster_mixed_seed479.jpg" aria-label="Seed 479: the expert and SideNet-MPC take the same path below the crossing obstacles; Slot-MLP collides at 12.4 seconds"><source src="static/video_mixed_seed479.mp4" type="video/mp4"></video></div>
     <div class="mix-foot">
-     <p class="mix-sum"><b>Same side, same path.</b> SideNet-MPC reproduces the expert&rsquo;s pass below the crossing group at a third of its computation time. Slot-MLP keeps straight and is hit at 12.2&nbsp;s.</p>
+     <p class="mix-sum"><b>Same side, same path.</b> SideNet-MPC reproduces the expert&rsquo;s pass below the crossing group at a third of its computation time. Slot-MLP keeps straight, north of their route, and is hit at 12.4&nbsp;s.</p>
      <ul class="outcome">
-      <li><span class="chip ok" aria-hidden="true">&#10003;</span>Expert<span class="t">34.0 s &middot; 39.1 ms</span></li>
-      <li><span class="chip ok" aria-hidden="true">&#10003;</span>SideNet-MPC<span class="t">34.0 s &middot; <b>13.0 ms</b></span></li>
-      <li><span class="chip no" aria-hidden="true">&#10005;</span>Slot-MLP<span class="t">collision at 12.2 s</span></li>
+      <li><span class="chip ok" aria-hidden="true">&#10003;</span>Expert<span class="t">34.0 s &middot; 38.2 ms</span></li>
+      <li><span class="chip ok" aria-hidden="true">&#10003;</span>SideNet-MPC<span class="t">34.0 s &middot; <b>11.8 ms</b></span></li>
+      <li><span class="chip no" aria-hidden="true">&#10005;</span>Slot-MLP<span class="t">collision at 12.4 s</span></li>
      </ul>
     </div>
    </div>
    <div class="mix-panel" role="tabpanel" id="mp-494" aria-labelledby="mt-494" hidden>
-    <div class="clip"><video muted playsinline preload="none" poster="static/poster_mixed_seed494.jpg" aria-label="Seed 494: the expert and SideNet-MPC pass above the crossing obstacles; Slot-MLP turns below and collides at 12.0 seconds"><source src="static/video_mixed_seed494.mp4" type="video/mp4"></video></div>
+    <div class="clip"><video muted playsinline preload="none" poster="static/poster_mixed_seed494.jpg" aria-label="Seed 494: the expert and SideNet-MPC pass above the crossing obstacles; Slot-MLP stays low and collides at 11.2 seconds"><source src="static/video_mixed_seed494.mp4" type="video/mp4"></video></div>
     <div class="mix-foot">
-     <p class="mix-sum"><b>A closing gap.</b> The expert and SideNet-MPC pass above the obstacles crossing the corridor. Slot-MLP turns below, into the gap they are closing, and collides at 12.0&nbsp;s.</p>
+     <p class="mix-sum"><b>A closing gap.</b> The expert and SideNet-MPC pass above the obstacles crossing the corridor. Slot-MLP stays low, in the gap they are closing, and collides at 11.2&nbsp;s.</p>
      <ul class="outcome">
-      <li><span class="chip ok" aria-hidden="true">&#10003;</span>Expert<span class="t">29.8 s &middot; 35.0 ms</span></li>
-      <li><span class="chip ok" aria-hidden="true">&#10003;</span>SideNet-MPC<span class="t">29.6 s &middot; <b>18.4 ms</b></span></li>
-      <li><span class="chip no" aria-hidden="true">&#10005;</span>Slot-MLP<span class="t">collision at 12.0 s</span></li>
+      <li><span class="chip ok" aria-hidden="true">&#10003;</span>Expert<span class="t">29.8 s &middot; 33.8 ms</span></li>
+      <li><span class="chip ok" aria-hidden="true">&#10003;</span>SideNet-MPC<span class="t">29.6 s &middot; <b>14.8 ms</b></span></li>
+      <li><span class="chip no" aria-hidden="true">&#10005;</span>Slot-MLP<span class="t">collision at 11.2 s</span></li>
      </ul>
     </div>
    </div>
    <div class="mix-panel" role="tabpanel" id="mp-447" aria-labelledby="mt-447" hidden>
-    <div class="clip"><video muted playsinline preload="none" poster="static/poster_mixed_seed447.jpg" aria-label="Seed 447: all three controllers stop at a dense cluster; SideNet-MPC clears it first and arrives at 43 seconds, the expert at 62.4 seconds, and Slot-MLP times out"><source src="static/video_mixed_seed447.mp4" type="video/mp4"></video></div>
+    <div class="clip"><video muted playsinline preload="none" poster="static/poster_mixed_seed447.jpg" aria-label="Seed 447: all three controllers slow down at a dense cluster; SideNet-MPC clears it first and arrives at 43 seconds, the expert at 62.4 seconds, and Slot-MLP collides inside it at 23.2 seconds"><source src="static/video_mixed_seed447.mp4" type="video/mp4"></video></div>
     <div class="mix-foot">
-     <p class="mix-sum"><b>A dense cluster.</b> All three slow to a crawl in front of a cluster near <i class="v">x</i>&nbsp;=&nbsp;75&nbsp;m. SideNet-MPC clears it over the top at 28&nbsp;s, the expert at 48&nbsp;s, and Slot-MLP only at 71&nbsp;s, too late to arrive.</p>
+     <p class="mix-sum"><b>A dense cluster.</b> All three slow to a crawl in front of a cluster near <i class="v">x</i>&nbsp;=&nbsp;75&nbsp;m. SideNet-MPC clears it over the top at 28&nbsp;s and the expert at 48&nbsp;s; Slot-MLP is still inside it when it is hit at 23.2&nbsp;s.</p>
      <ul class="outcome">
-      <li><span class="chip ok" aria-hidden="true">&#10003;</span>Expert<span class="t">62.4 s &middot; 38.9 ms</span></li>
-      <li><span class="chip ok" aria-hidden="true">&#10003;</span>SideNet-MPC<span class="t">43.0 s &middot; <b>21.3 ms</b></span></li>
-      <li><span class="chip no" aria-hidden="true">&#10005;</span>Slot-MLP<span class="t">timeout at 80 s</span></li>
+      <li><span class="chip ok" aria-hidden="true">&#10003;</span>Expert<span class="t">62.4 s &middot; 36.9 ms</span></li>
+      <li><span class="chip ok" aria-hidden="true">&#10003;</span>SideNet-MPC<span class="t">43.0 s &middot; <b>18.9 ms</b></span></li>
+      <li><span class="chip no" aria-hidden="true">&#10005;</span>Slot-MLP<span class="t">collision at 23.2 s</span></li>
      </ul>
     </div>
    </div>
   </div>
   <p class="note">Arrival time &middot; mean computation time per control period. Seeds chosen for illustration among runs that the expert and SideNet-MPC complete and Slot-MLP does not; the table counts all 100. 3&times; real time, click to replay.</p>
- </div>
-</section>
-
-<!-- ============================ mechanism ============================ -->
-<section id="mechanism" class="s-band" aria-labelledby="mech-h">
- <div class="wrap">
-  <div class="head reveal">
-   <div class="eyebrow">Why pairwise edges</div>
-   <h2 id="mech-h">Only the graph proposer reverses the side, <span class="grad">and where the expert does</span></h2>
-   <p class="lede">The partner obstacle slides away, widening the pair gap from 0.3 to 7.4&nbsp;m. The expert switches sides between 3.22 and 3.54&nbsp;m.</p>
-  </div>
-  <figure class="fig reveal">
-   <div class="plate"><img src="static/fig_gapcurve.png" alt="Branch logit of the lead obstacle against the pair gap for SideNet-MPC, Slot-MLP and Deep-set, with four scene snapshots showing the modes SideNet and Slot-MLP propose" loading="lazy"></div>
-   <figcaption><b>Side logit against the pair gap.</b> Shading: the expert's side; dashed: <i class="v">w</i><sub>s</sub> = 3.4&nbsp;m. Right: modes proposed by SideNet (solid) and Slot-MLP (dash-dotted) at four gaps.</figcaption>
-  </figure>
-  <div class="readout">
-   <div class="reveal"><b>Slot-MLP</b><span>Constant +1.367: the partner is not an input.</span></div>
-   <div class="reveal d2"><b>Deep-set</b><span>+2.744 to +2.996: never changes side.</span></div>
-   <div class="reveal d3 acc"><b>SideNet</b><span>&minus;1.322 to +1.862, crossing zero at 3.22&ndash;3.54&nbsp;m.</span></div>
-  </div>
  </div>
 </section>
 
@@ -686,11 +780,10 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
     </ul>
    </div>
    <div class="card reveal d2">
-    <h3>Limits and next steps</h3>
-    <ul class="clean cross mt">
-     <li>Slack-relaxed constraints on selected obstacles: no safety guarantee.</li>
-     <li>Single training seed; only SideNet saw the pair-band data.</li>
-     <li>Next: a graph over all selected obstacles, and embedded hardware.</li>
+    <h3>Next steps</h3>
+    <ul class="clean mt">
+     <li>Extend the graph from the branch obstacles to the full selected set.</li>
+     <li>Validate the controller on embedded hardware.</li>
     </ul>
    </div>
   </div>
@@ -708,11 +801,11 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
 /* ---------- chart data (the table above holds the same values) ---------- */
 (function () {
  var rows = [
-  { name: 'Expert', note: '16 threads', succ: 97, ms: 36.9 },
-  { name: 'SideNet-MPC', note: '1 core', succ: 90, ms: 20.9, acc: true },
-  { name: 'Slot-MLP', note: '1 core', succ: 82, ms: 19.7 },
-  { name: 'Slot-MLP-wide', note: '1 core', succ: 81, ms: 21.0 },
-  { name: 'Deep-set', note: '1 core', succ: 77, ms: 21.3 }
+  { name: 'Expert', note: '16 threads', succ: 97, ms: 35.5 },
+  { name: 'SideNet-MPC', note: '1 core', succ: 90, ms: 18.6, acc: true },
+  { name: 'Slot-MLP', note: '1 core', succ: 82, ms: 19.0 },
+  { name: 'Slot-MLP-wide', note: '1 core', succ: 83, ms: 19.2 },
+  { name: 'Deep-set', note: '1 core', succ: 80, ms: 19.1 }
  ];
  var charts = document.querySelectorAll('.chart');
  var tip = document.createElement('div');
@@ -859,9 +952,12 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
  vids.forEach(function (v) { io.observe(v); });
 })();
 
-/* ---------- mixed-traffic seed picker (tabs; arrow keys move between seeds) ---------- */
+/* ---------- replay pickers: one tab group per .mix block (arrow keys move between tabs) ---------- */
 (function () {
- var tabs = Array.prototype.slice.call(document.querySelectorAll('.seg [role="tab"]'));
+ var probe = document.createElement('video');
+ var canFs = !!(probe.requestFullscreen || probe.webkitRequestFullscreen || probe.webkitEnterFullscreen);
+ Array.prototype.slice.call(document.querySelectorAll('.mix')).forEach(function (box) {
+ var tabs = Array.prototype.slice.call(box.querySelectorAll('.seg [role="tab"]'));
  if (!tabs.length) return;
  function select(tab, focus) {
   tabs.forEach(function (t) {
@@ -875,13 +971,11 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
   });
   if (focus) tab.focus();
  }
- var fs = document.getElementById('mix-fs');
- if (fs) {
-  var probe = document.createElement('video');
-  if (probe.requestFullscreen || probe.webkitRequestFullscreen || probe.webkitEnterFullscreen) {
+ var fs = box.querySelector('.fs-btn');
+ if (fs && canFs) {
    fs.hidden = false;
    fs.addEventListener('click', function () {
-    var panel = document.querySelector('.mix-panel:not([hidden])');
+    var panel = box.querySelector('.mix-panel:not([hidden])');
     var v = panel && panel.querySelector('video');
     if (!v) return;
     if (v.paused && v._play) v._play();
@@ -889,7 +983,6 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
     else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen();
     else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
    });
-  }
  }
  tabs.forEach(function (t, i) {
   t.addEventListener('click', function () { select(t, false); });
@@ -903,6 +996,455 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
    e.preventDefault(); select(tabs[j], true);
   });
  });
+ });
+})();
+
+/* ---------- SideNet forward pass: animated schematic. The architecture follows the paper
+   (shared embedding, complete graph over the four branch slots, edge gap g* at the earlier
+   ego-obstacle encounter, range kernel on that gap, two residual message-passing layers,
+   shared head); the scene and the logit magnitudes are illustrative. ---------- */
+(function () {
+ var fig = document.getElementById('sidenet-anim');
+ if (!fig || !window.requestAnimationFrame || !document.createElementNS) return;
+ var NS = 'http://www.w3.org/2000/svg';
+ var box = fig.querySelector('.sn-stage'), svg = box.querySelector('svg');
+ var live = fig.querySelector('.sn-live'), prog = fig.querySelector('.sn-prog span');
+ var playBtn = fig.querySelector('.sn-play'), playLbl = playBtn.querySelector('span');
+ var steps = Array.prototype.slice.call(fig.querySelectorAll('.sn-steps button'));
+ var gaps = Array.prototype.slice.call(fig.querySelectorAll('.sn-gap button'));
+ var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+ var HEX = ['#ff375f', '#0a84ff', '#30d158', '#bf5af2'];
+ var RGB = HEX.map(function (h) { return [1, 3, 5].map(function (k) { return parseInt(h.substr(k, 2), 16); }); });
+ var SUB = ['₁', '₂', '₃', '₄'];
+ var ST = [0, 3.0, 6.0, 10.6], T_DONE = 14.2, T_LOOP = 16.6;
+ var UE = 2.5, TH = 8, KAPPA = 3.4;            /* ego speed [m/s], horizon [s], kernel scale at its initial value w_s [m] */
+ var NP = [[-0.62, -0.42], [-0.5, 0.6], [0.6, -0.6], [0.66, 0.44]];
+ var TEXT = [
+  'A shared MLP embeds the 12 inputs of each branch obstacle (relative position and velocity, radius, active flag, ego state) into a node feature hᵢ.',
+  'Each pair carries the gap g* that the vehicle will meet when it first reaches either obstacle. The kernel w = exp(−g*/κ) makes narrow gaps the strongest edges.',
+  'Two edge-conditioned message-passing layers add the kernel-weighted messages of the neighbors to every node in a residual update.'
+ ];
+ var LAY = {
+  wide: { h: true, W: 1100, H: 330, f: 1.1, scene: [0, 30, 372, 280], world: [186, 180, 10.8], cap: [16, 56], gl: [16, 84],
+   emb: [404, 116, 108, 124], head: [814, 116, 100, 124], g: [664, 178, 112], nr: 23,
+   gcap: [664, 46, 'middle'], kern: [664, 318], zl: [458, 104, 'middle'], hl: [458, 262, 'middle'],
+   lg: { lab: 944, zero: 1032, y0: 110, dy: 42, s: 44, cap: [1022, 46, 'middle'], rows: true },
+   mode: [1022, 292], flows: [[376, 178, 400, 178], [516, 178, 562, 178], [768, 178, 810, 178]] },
+  tall: { h: false, W: 560, H: 1100, f: 1.4, scene: [0, 30, 560, 304], world: [280, 190, 15.4], cap: [18, 64], gl: [18, 96],
+   emb: [120, 366, 320, 74], head: [120, 786, 320, 74], g: [280, 606, 150], nr: 31,
+   gcap: [24, 482, 'start'], kern: [280, 764], zl: [292, 356, 'start'], hl: [292, 462, 'start'],
+   lg: { lab: 40, zero: 300, y0: 940, dy: 36, s: 110, cap: [40, 904, 'start'], rows: false },
+   mode: [280, 1088], flows: [[280, 338, 280, 362], [280, 444, 280, 470]] }
+ };
+ var L, M, R, key = '', wide = false, auto = true, t = 0, stage = -1, slideFrom = null;
+ var playing = !reduce, visible = !('IntersectionObserver' in window), raf = 0, last = 0;
+
+ function clamp(x, a, b) { return x < a ? a : x > b ? b : x; }
+ function seg(x, a, b) { return clamp((x - a) / (b - a), 0, 1); }
+ function tri(x, c, h) { return Math.max(0, 1 - Math.abs(x - c) / h); }
+ function ease(u) { return u < 0.5 ? 4 * u * u * u : 1 - Math.pow(2 - 2 * u, 3) / 2; }
+ function lerp(a, b, u) { return a + (b - a) * u; }
+ function qb(a, c, b, u) { var v = 1 - u; return [v * v * a[0] + 2 * v * u * c[0] + u * u * b[0], v * v * a[1] + 2 * v * u * c[1] + u * u * b[1]]; }
+ function n2(v) { return Math.round(v * 100) / 100; }
+ function set(e, a) { for (var k in a) if (Object.prototype.hasOwnProperty.call(a, k)) e.setAttribute(k, typeof a[k] === 'number' ? n2(a[k]) : a[k]); }
+ function el(tag, a, parent) { var e = document.createElementNS(NS, tag); if (a) set(e, a); (parent || svg).appendChild(e); return e; }
+ function tx(s, a, parent) { var e = el('text', a, parent); e.textContent = s; return e; }
+ function op(e, v) { e.style.opacity = v <= 0.001 ? '0' : String(n2(v)); }
+ function mv(e, p, s) { e.setAttribute('transform', 'translate(' + n2(p[0]) + ',' + n2(p[1]) + ')' + (s == null ? '' : ' scale(' + n2(Math.max(s, 0.001)) + ')')); }
+ function S(x, y) { return [L.world[0] + (x - 13.75) * L.world[2], L.world[1] - y * L.world[2]]; }
+ function nodeXY(i) { return [L.g[0] + L.g[2] * NP[i][0], L.g[1] + L.g[2] * NP[i][1]]; }
+ function len(p) { try { return p.getTotalLength(); } catch (e) { return 1000; } }
+ function dashed(p) { var l = len(p); p.len = l; p.setAttribute('stroke-dasharray', n2(l) + ' ' + n2(l)); }
+ function smooth(pts) {                         /* Catmull-Rom through the points, as cubic Beziers */
+  var d = 'M' + n2(pts[0][0]) + ' ' + n2(pts[0][1]);
+  for (var i = 0; i < pts.length - 1; i++) {
+   var p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+   d += 'C' + [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6, p2[0] - (p3[0] - p1[0]) / 6,
+               p2[1] - (p3[1] - p1[1]) / 6, p2[0], p2[1]].map(n2).join(' ');
+  }
+  return d;
+ }
+
+ /* schematic scene [m]: ego at the origin heading +x, b1 the lead obstacle, b2 its partner below */
+ function model(isWide) {
+  var o = [
+   { x: 14, y: 1.0, r: 1.2, vx: -0.5, vy: 0 },
+   { x: 16, y: isWide ? -6.6 : -3.6, r: 1.1, vx: -0.5, vy: 0.3 },
+   { x: 25, y: 5.6, r: 1.3, vx: -0.3, vy: -0.2 },
+   { x: 27, y: -5.2, r: 1.0, vx: -0.5, vy: 0.15 }
+  ];
+  o.forEach(function (b) {                      /* ego-obstacle closest approach, clipped to the horizon */
+   var vx = b.vx - UE, vy = b.vy;
+   b.tc = clamp(-(b.x * vx + b.y * vy) / (vx * vx + vy * vy), 0, TH);
+  });
+  var E = [];
+  for (var i = 0; i < 4; i++) for (var j = i + 1; j < 4; j++) {
+   var ts = Math.min(o[i].tc, o[j].tc);         /* gap at the earlier of the two encounters */
+   var dx = o[i].x - o[j].x + (o[i].vx - o[j].vx) * ts, dy = o[i].y - o[j].y + (o[i].vy - o[j].vy) * ts;
+   var g = Math.sqrt(dx * dx + dy * dy) - o[i].r - o[j].r;
+   E.push({ i: i, j: j, t: ts, g: g, w: Math.exp(-Math.max(g, 0) / KAPPA) });
+  }
+  var mix = o.map(function (b, i) {             /* node tint drifts toward its neighbors, weighted by w */
+   var s = 0, c = [0, 0, 0];
+   E.forEach(function (e) {
+    if (e.i !== i && e.j !== i) return;
+    var k = e.i === i ? e.j : e.i;
+    s += e.w;
+    for (var q = 0; q < 3; q++) c[q] += e.w * RGB[k][q];
+   });
+   return { b1: 0.9 * s / (1 + s), b2: 0.9 * 2 * s / (1 + 2 * s), c: c.map(function (v) { return v / s; }) };
+  });
+  return { wide: isWide, o: o, E: E, mix: mix,
+   logit: isWide ? [1.35, -0.8, 1.0, -0.9] : [-1.2, -0.85, 1.0, -0.9],
+   path: isWide ? [[0, 0], [5, -0.3], [10, -1.9], [15, -2.3], [20, -1.3], [25, -0.3], [29.5, 0]]
+                : [[0, 0], [5, 0.5], [10, 3.2], [15, 3.9], [20, 2.8], [25, 1.1], [29.5, 0.2]] };
+ }
+
+ function block(b, lines, sub) {
+  var f = L.f, g = el('g'), cx = b[0] + b[2] / 2, lh = 18 * f;
+  el('rect', { x: b[0], y: b[1], width: b[2], height: b[3], rx: 14, 'class': 'x-blk' }, g);
+  var on = el('rect', { x: b[0], y: b[1], width: b[2], height: b[3], rx: 14, 'class': 'x-on' }, g);
+  var y0 = b[1] + b[3] / 2 - (lines.length * lh + 12 * f) / 2 + 13 * f;
+  lines.forEach(function (s, k) { tx(s, { x: cx, y: y0 + k * lh, 'class': 'x-t1', 'font-size': 15 * f, 'text-anchor': 'middle' }, g); });
+  tx(sub, { x: cx, y: y0 + lines.length * lh + 2 * f, 'class': 'x-t3', 'font-size': 12 * f, 'text-anchor': 'middle' }, g);
+  return on;
+ }
+
+ function build() {
+  var f = L.f, h = L.h, s = L.world[2], sc = L.scene, lg = L.lg, i, q, a, b;
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  svg.setAttribute('viewBox', '0 0 ' + L.W + ' ' + L.H);
+  box.classList.toggle('tall', !h);
+  R = { obs: [], chips: [], dots: [], nodes: [], edges: [], pulses: [], links: [], rlinks: [], bars: [] };
+  var defs = el('defs');
+  a = el('marker', { id: 'sn-ah', viewBox: '0 0 10 10', refX: 7, refY: 5, markerWidth: 5, markerHeight: 5, orient: 'auto' }, defs);
+  el('path', { d: 'M0 0L10 5L0 10z', 'class': 'x-mk' }, a);
+  a = el('marker', { id: 'sn-ah2', viewBox: '0 0 10 10', refX: 7, refY: 5, markerWidth: 6, markerHeight: 6, orient: 'auto' }, defs);
+  el('path', { d: 'M0 0L10 5L0 10z', 'class': 'x-mk2' }, a);
+
+  /* scene */
+  el('rect', { x: sc[0], y: sc[1], width: sc[2], height: sc[3], rx: 16, 'class': 'x-panel' });
+  tx('Branch obstacles', { x: L.cap[0], y: L.cap[1], 'class': 'x-t2', 'font-size': 14 * f });
+  a = S(-2.5, 0); b = S(30, 0);
+  el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], 'class': 'x-cl' });
+  R.path = el('path', { 'class': 'x-path', 'stroke-width': 3 * f });
+  R.ghost = el('g');
+  R.gObs = [el('circle', { 'class': 'x-ghost' }, R.ghost), el('circle', { 'class': 'x-ghost' }, R.ghost)];
+  R.brk = el('g');
+  R.brkP = el('path', { 'class': 'x-brk', 'stroke-width': 2.2 * f }, R.brk);
+  R.brkT = tx('', { x: L.gl[0], y: L.gl[1], 'class': 'x-blue', 'font-size': 13 * f }, R.brk);
+  R.brkT2 = tx('', { x: L.gl[0], y: L.gl[1] + 17 * f, 'class': 'x-t3', 'font-size': 11.5 * f }, R.brk);
+  for (i = 0; i < 4; i++) {
+   q = {};
+   q.c = el('circle', { 'class': 'x-obs', stroke: HEX[i], 'stroke-width': 2.4 * f });
+   q.v = el('line', { 'class': 'x-vel', 'marker-end': 'url(#sn-ah)' });
+   q.lab = tx('b' + SUB[i], { 'class': 'x-t1', 'font-size': 12.5 * f, 'text-anchor': 'middle', 'dominant-baseline': 'central' });
+   q.badge = el('g');
+   el('circle', { r: 8 * f, 'class': 'x-badge', stroke: HEX[i], 'stroke-width': 1.6 * f }, q.badge);
+   q.bt = tx('', { 'class': 'x-t1', 'font-size': 10.5 * f, 'text-anchor': 'middle', 'dominant-baseline': 'central' }, q.badge);
+   R.obs.push(q);
+  }
+  R.ego = el('g'); mv(R.ego, S(0, 0));
+  el('circle', { r: 1.2 * s, 'class': 'x-rs' }, R.ego);
+  el('polygon', { points: [[1.5, 0], [0.5, -0.7], [-1.1, -0.7], [-1.1, 0.7], [0.5, 0.7]].map(function (p) { return n2(p[0] * s) + ',' + n2(p[1] * s); }).join(' '), 'class': 'x-ego' }, R.ego);
+  tx('ego', { x: 0, y: 1.2 * s + 13 * f, 'class': 'x-t3', 'font-size': 11.5 * f, 'text-anchor': 'middle' }, R.ego);
+
+  /* pipeline */
+  L.flows.forEach(function (p) { el('line', { x1: p[0], y1: p[1], x2: p[2], y2: p[3], 'class': 'x-flow', 'marker-end': 'url(#sn-ah2)' }); });
+  R.emb = block(L.emb, h ? ['Shared', 'embedding'] : ['Shared embedding'], '12 → 128 → 128');
+  R.head = block(L.head, h ? ['Shared', 'head'] : ['Shared head'], '128 → 128 → 1');
+  var e = L.emb, hd = L.head;
+  R.ein = h ? [e[0], e[1] + e[3] / 2] : [e[0] + e[2] / 2, e[1]];
+  R.eout = h ? [e[0] + e[2], e[1] + e[3] / 2] : [e[0] + e[2] / 2, e[1] + e[3]];
+  var hin = h ? [hd[0], hd[1] + hd[3] / 2] : [hd[0] + hd[2] / 2, hd[1]];
+  var hout = [hd[0] + hd[2], hd[1] + hd[3] / 2];
+  R.zLab = tx('in: zᵢ ∈ ℝ¹²', { x: L.zl[0], y: L.zl[1], 'class': 'x-t3', 'font-size': 12.5 * f, 'text-anchor': L.zl[2] });
+  R.hLab = tx('out: hᵢ ∈ ℝ¹²⁸', { x: L.hl[0], y: L.hl[1], 'class': 'x-t3', 'font-size': 12.5 * f, 'text-anchor': L.hl[2] });
+
+  /* graph */
+  R.nxy = [0, 1, 2, 3].map(nodeXY);
+  R.gcap = tx('', { x: L.gcap[0], y: L.gcap[1], 'class': 'x-t2', 'font-size': 14 * f, 'text-anchor': L.gcap[2] });
+  for (q = 0; q < 6; q++) R.edges.push({ line: el('line', { 'class': 'x-edge' }), lab: tx('', { 'class': 'x-t3', 'font-size': 11.5 * f, 'text-anchor': 'middle', 'dominant-baseline': 'central' }) });
+  R.kern = tx('wᵢⱼ = exp(−g*ᵢⱼ / κ)' + (h ? ': the narrower the gap, the stronger the edge' : ': narrow gap, strong edge'), { x: L.kern[0], y: L.kern[1], 'class': 'x-t2', 'font-size': (h ? 13 : 12) * f, 'text-anchor': 'middle' });
+  for (i = 0; i < 4; i++) {                     /* read-out links, behind the nodes */
+   var n = R.nxy[i], nr = L.nr, pth;
+   pth = h ? 'M' + n2(n[0] + nr) + ' ' + n2(n[1]) + 'C' + [n[0] + nr + 50, n[1], hin[0] - 36, hin[1], hin[0], hin[1]].map(n2).join(' ')
+           : 'M' + n2(n[0]) + ' ' + n2(n[1] + nr) + 'C' + [n[0], n[1] + nr + 44, hin[0], hin[1] - 30, hin[0], hin[1]].map(n2).join(' ');
+   R.links.push(el('path', { d: pth, 'class': 'x-link', stroke: HEX[i] }));
+   dashed(R.links[i]);
+  }
+  for (q = 0; q < 12; q++) R.pulses.push(el('circle', { r: 4 }));
+  for (i = 0; i < 4; i++) {
+   var g = el('g'), N = { g: g };
+   N.tint = el('circle', { r: L.nr, 'fill-opacity': 0.3 }, g);
+   N.ring = el('circle', { r: L.nr, fill: 'none', stroke: HEX[i] }, g);
+   tx('h' + SUB[i], { 'class': 'x-t1', 'font-size': 15 * f, 'text-anchor': 'middle', 'dominant-baseline': 'central' }, g);
+   N.plus = tx('+', { x: L.nr * 0.95, y: -L.nr * 0.95, 'class': 'x-blue', 'font-size': 17 * f, 'text-anchor': 'middle', 'dominant-baseline': 'central' }, g);
+   N.sc = 0;
+   R.nodes.push(N);
+  }
+
+  /* logits */
+  tx('Logits ℓᵢ', { x: lg.cap[0], y: lg.cap[1], 'class': 'x-t2', 'font-size': 14 * f, 'text-anchor': lg.cap[2] });
+  var hy = lg.y0 - 26 * f;
+  tx('← left', { x: lg.zero - 6 * f, y: hy, 'class': 'x-t3', 'font-size': 11.5 * f, 'text-anchor': 'end' });
+  tx('right →', { x: lg.zero + 6 * f, y: hy, 'class': 'x-t3', 'font-size': 11.5 * f });
+  el('line', { x1: lg.zero, y1: hy + 8 * f, x2: lg.zero, y2: lg.y0 + 3 * lg.dy + 14 * f, 'class': 'x-axis' });
+  for (i = 0; i < 4; i++) {
+   var y = lg.y0 + i * lg.dy;
+   if (lg.rows) {
+    R.rlinks.push(el('path', { d: 'M' + n2(hout[0]) + ' ' + n2(hout[1]) + 'C' + [hout[0] + 10, hout[1], lg.lab - 26, y, lg.lab - 10 * f, y].map(n2).join(' '), 'class': 'x-link', stroke: HEX[i] }));
+    dashed(R.rlinks[i]);
+   }
+   el('circle', { cx: lg.lab, cy: y, r: 4.5 * f, fill: HEX[i] });
+   tx('ℓ' + SUB[i], { x: lg.lab + 10 * f, y: y, 'class': 'x-t1', 'font-size': 14 * f, 'dominant-baseline': 'central' });
+   el('line', { x1: lg.zero - 1.45 * lg.s, y1: y, x2: lg.zero + 1.45 * lg.s, y2: y, 'class': 'x-track' });
+   R.bars.push(el('rect', { y: y - 7 * f, height: 14 * f, rx: 3 * f, fill: HEX[i], width: 0, x: lg.zero }));
+  }
+  R.mode = tx('', { x: L.mode[0], y: L.mode[1], 'font-size': 13.5 * f, 'text-anchor': 'middle' });
+
+  /* chips z_i (6 obstacle cells, 6 ego cells) and the dots h_i that leave the embedding */
+  for (i = 0; i < 4; i++) {
+   var cg = el('g');
+   for (var k = 0; k < 12; k++) {
+    var ca = { x: (k - 6) * 5.5 * f, y: -4.5 * f, width: 4.5 * f, height: 9 * f, rx: 1.2 * f };
+    if (k < 6) ca.fill = HEX[i]; else ca['class'] = 'x-cell';
+    el('rect', ca, cg);
+   }
+   R.chips.push(cg);
+   R.dots.push(el('circle', { r: 6 * f, fill: HEX[i] }));
+  }
+  R.hot = null;
+ }
+
+ function placeObs(i, y) {
+  var o = M.o[i], s = L.world[2], c = S(o.x, y), q = R.obs[i];
+  set(q.c, { cx: c[0], cy: c[1], r: o.r * s });
+  set(q.lab, { x: c[0], y: c[1] });
+  var sp = Math.sqrt(o.vx * o.vx + o.vy * o.vy), ux = o.vx / sp, uy = o.vy / sp, l0 = o.r + 0.15, l1 = o.r + 0.9 + 2.2 * sp;
+  var a = S(o.x + ux * l0, y + uy * l0), b = S(o.x + ux * l1, y + uy * l1);
+  set(q.v, { x1: a[0], y1: a[1], x2: b[0], y2: b[1] });
+  var side = M.logit[i] > 0 ? 1 : -1;          /* +1: pass on the right, so the vehicle goes below and the tag sits above */
+  mv(q.badge, S(o.x, y + side * (o.r + 1.05)));
+  q.bt.textContent = side > 0 ? 'R' : 'L';
+  q.P = c;
+ }
+
+ function place() {
+  var f = L.f, s = L.world[2], i;
+  for (i = 0; i < 4; i++) placeObs(i, M.o[i].y);
+  R.cc = R.obs.map(function (q) { return L.h ? [R.ein[0] - 60, q.P[1]] : [q.P[0], R.ein[1] - 40]; });
+  R.oc = R.nxy.map(function (n) { return L.h ? [R.eout[0] + 44, n[1]] : [n[0], R.eout[1] + 44]; });
+  /* encounter-time positions of b1 and b2, and the bracket across their gap */
+  var e0 = M.E[0], ts = e0.t, A = M.o[0], B = M.o[1];
+  R.gp = [[A.x + A.vx * ts, A.y + A.vy * ts], [B.x + B.vx * ts, B.y + B.vy * ts]];
+  R.gObs[0].setAttribute('r', n2(A.r * s));
+  R.gObs[1].setAttribute('r', n2(B.r * s));
+  var dx = R.gp[1][0] - R.gp[0][0], dy = R.gp[1][1] - R.gp[0][1], d = Math.sqrt(dx * dx + dy * dy), ux = dx / d, uy = dy / d;
+  var p1 = S(R.gp[0][0] + ux * A.r, R.gp[0][1] + uy * A.r), p2 = S(R.gp[1][0] - ux * B.r, R.gp[1][1] - uy * B.r);
+  var px = p1[1] - p2[1], py = p2[0] - p1[0], pl = Math.sqrt(px * px + py * py) || 1;
+  px *= 5 * f / pl; py *= 5 * f / pl;
+  R.brkP.setAttribute('d', ['M', p1[0], p1[1], 'L', p2[0], p2[1], 'M', p1[0] - px, p1[1] - py, 'L', p1[0] + px, p1[1] + py,
+                            'M', p2[0] - px, p2[1] - py, 'L', p2[0] + px, p2[1] + py].map(function (v) { return typeof v === 'number' ? n2(v) : v; }).join(' '));
+  R.brkT.textContent = 'gap g*₁₂ = ' + e0.g.toFixed(1) + ' m ' + (e0.g < 3.4 ? '<' : '>') + ' wₛ = 3.4 m';
+  R.brkT2.textContent = 'dashed: b₁, b₂ at t* = ' + ts.toFixed(1) + ' s';
+  /* edges */
+  M.E.forEach(function (e, q) {
+   var a = R.nxy[e.i], b = R.nxy[e.j], r = R.edges[q];
+   r.a = a; r.b = b; r.w = e.w;
+   var u = (e.i === 0 && e.j === 3) || (e.i === 1 && e.j === 2) ? 0.3 : 0.5;
+   var ex = b[0] - a[0], ey = b[1] - a[1], el_ = Math.sqrt(ex * ex + ey * ey);
+   set(r.lab, { x: lerp(a[0], b[0], u) - ey / el_ * 11 * f, y: lerp(a[1], b[1], u) + ex / el_ * 11 * f });
+   r.lab.textContent = 'e' + SUB[e.i] + SUB[e.j];
+  });
+  R.D = [];
+  M.E.forEach(function (e) { R.D.push({ a: e.j, b: e.i, w: e.w }); R.D.push({ a: e.i, b: e.j, w: e.w }); });
+  R.D.forEach(function (d, q) { R.pulses[q].setAttribute('fill', HEX[d.a]); });
+  /* proposed mode and planned path */
+  R.mode.textContent = '';
+  el('tspan', { 'class': 'x-t2' }, R.mode).textContent = 'proposed sides  ';
+  el('tspan', { 'class': 'x-t1' }, R.mode).textContent = M.logit.map(function (v) { return v > 0 ? 'R' : 'L'; }).join(' · ');
+  R.path.setAttribute('d', smooth(M.path.map(function (p) { return S(p[0], p[1]); })));
+  dashed(R.path);
+ }
+
+ function stageText(k) {
+  if (k < 3) return TEXT[k];
+  return 'A shared head emits one logit per obstacle, and its sign is the proposed side. With the partner gap at ' +
+   M.E[0].g.toFixed(1) + ' m, ' + (M.wide ? 'above' : 'below') + ' wₛ = 3.4 m, b₁ is passed ' +
+   (M.wide ? 'on the right, through the gap.' : 'on the left, around the pair.');
+ }
+ function setStage(k) {
+  stage = k;
+  steps.forEach(function (b, j) {
+   if (j === k) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+   b.classList.toggle('done', j < k);
+  });
+  live.textContent = stageText(k);
+ }
+
+ function render(tt) {
+  t = tt;
+  var f = L.f, gf = 1 - seg(t, T_LOOP - 0.4, T_LOOP), i, q, u, v;
+  var k = t < ST[1] ? 0 : t < ST[2] ? 1 : t < ST[3] ? 2 : 3;
+  if (k !== stage) setStage(k);
+  prog.style.width = n2(100 * t / T_LOOP) + '%';
+  if (slideFrom !== null) {                    /* b2 slides to the other gap when the loop switches scenes */
+   u = ease(seg(t, 0, 0.7));
+   placeObs(1, lerp(slideFrom, M.o[1].y, u));
+   if (u >= 1) slideFrom = null;
+  }
+  /* 1. embed */
+  var glow = 0;
+  for (i = 0; i < 4; i++) {
+   var a0 = 0.7 + 0.22 * i, b0 = 1.75 + 0.2 * i;
+   u = ease(seg(t, a0, a0 + 0.85));
+   mv(R.chips[i], qb(R.obs[i].P, R.cc[i], R.ein, u), 1 - 0.35 * u);
+   op(R.chips[i], seg(t, a0, a0 + 0.12) * (1 - seg(t, a0 + 0.78, a0 + 0.9)) * gf);
+   glow += tri(t, a0 + 0.85, 0.4);
+   u = ease(seg(t, b0, b0 + 0.7));
+   mv(R.dots[i], qb(R.eout, R.oc[i], R.nxy[i], u));
+   op(R.dots[i], seg(t, b0, b0 + 0.08) * (1 - seg(t, b0 + 0.62, b0 + 0.72)) * gf);
+   R.nodes[i].sc = ease(seg(t, b0 + 0.6, b0 + 0.95));
+  }
+  op(R.emb, Math.min(1, glow) * gf);
+  op(R.zLab, seg(t, 0.7, 1.0) * (1 - seg(t, 2.7, 3.0)) * gf);
+  op(R.hLab, seg(t, 1.8, 2.1) * (1 - seg(t, 3.0, 3.3)) * gf);
+  /* 2. pair gaps */
+  var mo = ease(seg(t, 5.0, 5.8));
+  for (q = 0; q < 6; q++) {
+   var E = R.edges[q], a1 = 3.0 + 0.1 * q;
+   u = ease(seg(t, a1, a1 + 0.6));
+   set(E.line, { x1: E.a[0], y1: E.a[1], x2: lerp(E.a[0], E.b[0], u), y2: lerp(E.a[1], E.b[1], u), 'stroke-width': lerp(1.6, 1 + 8 * E.w, mo) * f });
+   op(E.line, (u > 0 ? lerp(0.6, 0.3 + 0.7 * E.w, mo) : 0) * gf);
+   op(E.lab, seg(t, 3.6, 4.0) * (1 - 0.6 * seg(t, 6.0, 6.4)) * gf);
+  }
+  var hot = t >= 4.9;
+  if (R.hot !== hot) { R.edges[0].line.classList.toggle('hot', hot); R.hot = hot; }
+  op(R.kern, seg(t, 5.0, 5.4) * gf);
+  u = ease(seg(t, 3.8, 4.9));
+  for (i = 0; i < 2; i++) {
+   var o = M.o[i], gpos = S(lerp(o.x, R.gp[i][0], u), lerp(o.y, R.gp[i][1], u));
+   set(R.gObs[i], { cx: gpos[0], cy: gpos[1] });
+  }
+  var fadeG = 1 - 0.55 * seg(t, 10.6, 11.0);
+  op(R.ghost, seg(t, 3.8, 4.1) * fadeG * gf);
+  op(R.brk, seg(t, 4.9, 5.2) * fadeG * gf);
+  /* 3. message passing, two layers */
+  var B = t < 8.3 ? 6.0 : 8.3;
+  for (q = 0; q < 12; q++) {
+   var D = R.D[q], st = B + 0.15 + 0.06 * (q % 4), pa = R.nxy[D.a], pb = R.nxy[D.b];
+   var ddx = pb[0] - pa[0], ddy = pb[1] - pa[1], cut = L.nr / Math.sqrt(ddx * ddx + ddy * ddy);
+   u = ease(seg(t, st, st + 1.0));
+   set(R.pulses[q], { cx: lerp(pa[0] + ddx * cut, pb[0] - ddx * cut, u), cy: lerp(pa[1] + ddy * cut, pb[1] - ddy * cut, u), r: (2.4 + 7 * D.w) * f });
+   op(R.pulses[q], (t >= 6.0 ? (0.3 + 0.7 * D.w) * seg(t, st, st + 0.1) * (1 - seg(t, st + 0.88, st + 1.0)) : 0) * gf);
+  }
+  var u1 = ease(seg(t, 7.1, 7.7)), u2 = ease(seg(t, 9.4, 10.0)), fl = tri(t, 7.35, 0.35) + tri(t, 9.65, 0.35);
+  for (i = 0; i < 4; i++) {
+   var N = R.nodes[i], mx = M.mix[i], be = mx.b1 * u1 + (mx.b2 - mx.b1) * u2, rgb = [];
+   for (q = 0; q < 3; q++) rgb.push(Math.round(lerp(RGB[i][q], mx.c[q], be)));
+   N.tint.setAttribute('fill', 'rgb(' + rgb.join(',') + ')');
+   N.ring.setAttribute('stroke-width', n2((2.4 + 2.4 * fl) * f));
+   mv(N.g, R.nxy[i], N.sc);
+   op(N.g, (N.sc > 0 ? 1 : 0) * gf);
+   op(N.plus, fl * gf);
+  }
+  var cap = t < 6.0 ? 'Complete graph · 6 pairs' : t < 8.3 ? 'Message passing · layer 1 of 2'
+          : t < 10.6 ? 'Message passing · layer 2 of 2' : 'Updated features hᵢ⁽²⁾';
+  if (R.gcap.textContent !== cap) R.gcap.textContent = cap;
+  op(R.gcap, seg(t, 1.8, 2.2) * gf);
+  /* 4. read out */
+  for (i = 0; i < 4; i++) {
+   u = ease(seg(t, 10.6 + 0.08 * i, 11.2 + 0.08 * i));
+   R.links[i].style.strokeDashoffset = n2(R.links[i].len * (1 - u));
+   op(R.links[i], (u > 0 ? 0.55 : 0) * gf);
+   if (R.rlinks[i]) {
+    u = ease(seg(t, 11.15 + 0.08 * i, 11.5 + 0.08 * i));
+    R.rlinks[i].style.strokeDashoffset = n2(R.rlinks[i].len * (1 - u));
+    op(R.rlinks[i], (u > 0 ? 0.55 : 0) * gf);
+   }
+   v = M.logit[i] * ease(seg(t, 11.4 + 0.1 * i, 12.2 + 0.1 * i));
+   set(R.bars[i], { x: L.lg.zero + Math.min(0, v * L.lg.s), width: Math.abs(v) * L.lg.s });
+   op(R.bars[i], gf);
+   op(R.obs[i].badge, seg(t, 12.6 + 0.1 * i, 12.9 + 0.1 * i) * gf);
+  }
+  op(R.head, tri(t, 11.25, 0.45) * gf);
+  op(R.mode, seg(t, 12.2, 12.5) * gf);
+  u = ease(seg(t, 12.3, 13.8));
+  R.path.style.strokeDashoffset = n2(R.path.len * (1 - u));
+  op(R.path, (u > 0 ? 1 : 0) * gf);
+ }
+
+ function setWide(v, slide) {
+  var prevY = M ? M.o[1].y : null;
+  wide = v; M = model(v);
+  slideFrom = slide && prevY !== null && prevY !== M.o[1].y ? prevY : null;
+  gaps.forEach(function (b) {
+   var on = (b.getAttribute('data-wide') === '1') === v;
+   b.setAttribute('aria-checked', on ? 'true' : 'false');
+   b.tabIndex = on ? 0 : -1;
+  });
+  if (R) { place(); if (slideFrom !== null) placeObs(1, slideFrom); }
+  if (stage === 3) live.textContent = stageText(3);
+ }
+ function tick(now) {
+  if (!playing || !visible) { raf = 0; return; }
+  var dt = last ? Math.min(0.05, (now - last) / 1000) : 0, nt = t + dt;
+  last = now;
+  if (nt >= T_LOOP) { nt = 0; if (auto) setWide(!wide, true); }
+  render(nt);
+  raf = requestAnimationFrame(tick);
+ }
+ function kick() { if (playing && visible && !raf) { last = 0; raf = requestAnimationFrame(tick); } }
+ function setPlaying(p) {
+  playing = p;
+  playBtn.setAttribute('data-state', p ? 'playing' : 'paused');
+  playLbl.textContent = p ? 'Pause' : 'Play';
+  playBtn.setAttribute('aria-label', p ? 'Pause the animation' : 'Play the animation');
+  live.setAttribute('aria-live', p ? 'off' : 'polite');
+  kick();
+ }
+
+ playBtn.addEventListener('click', function () {
+  if (!playing && t >= T_DONE - 0.05) render(0);
+  setPlaying(!playing);
+ });
+ steps.forEach(function (b, k) {
+  b.addEventListener('click', function () { render(playing ? ST[k] : (k < 3 ? ST[k + 1] - 0.05 : T_DONE)); });
+ });
+ gaps.forEach(function (b, j) {
+  b.addEventListener('click', function () {
+   auto = false;
+   setWide(b.getAttribute('data-wide') === '1', false);
+   render(playing ? ST[1] : t);
+  });
+  b.addEventListener('keydown', function (e) {
+   if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].indexOf(e.key) < 0) return;
+   e.preventDefault();
+   var o = gaps[1 - j]; o.focus(); o.click();
+  });
+ });
+
+ function relayout() {
+  var k = box.clientWidth < 820 ? 'tall' : 'wide';
+  if (k === key) return;
+  key = k; L = LAY[k];
+  build(); place(); stage = -1; render(t);
+ }
+ M = model(false);
+ relayout();
+ if (window.ResizeObserver) new ResizeObserver(relayout).observe(box);
+ else window.addEventListener('resize', relayout);
+ if ('IntersectionObserver' in window) {
+  new IntersectionObserver(function (es) {
+   visible = es[es.length - 1].intersectionRatio > 0.2;
+   kick();
+  }, { threshold: [0, 0.2, 0.5] }).observe(box);
+ }
+ render(reduce ? T_DONE : 0);
+ setPlaying(playing);
+ fig._snRender = function (tt, w) { if (w != null && !!w !== wide) setWide(!!w, false); render(tt); };
 })();
 
 /* ---------- theme toggle ---------- */
