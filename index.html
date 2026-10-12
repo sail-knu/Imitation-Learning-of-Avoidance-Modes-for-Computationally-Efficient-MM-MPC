@@ -6,6 +6,16 @@
 <title>Imitation Learning of Avoidance Modes for Computationally Efficient Multimodal MPC</title>
 <meta name="description" content="SideNet-MPC: a graph network proposes one avoidance mode, the previous decision is kept as a second candidate, and at most two TC-CBF constrained OCPs are solved per control period.">
 <meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="Imitation Learning of Avoidance Modes for Computationally Efficient Multimodal MPC">
+<meta property="og:description" content="Changyu Lee, Byung-Kwan Lee, Kanghoon Yoon · A graph network learns the avoidance side of each obstacle from a multimodal MPC expert, cutting sixteen OCPs per control period to at most two.">
+<meta property="og:url" content="https://sail-knu.github.io/Imitation-Learning-of-Avoidance-Modes-for-Computationally-Efficient-MM-MPC/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://sail-knu.github.io/Imitation-Learning-of-Avoidance-Modes-for-Computationally-Efficient-MM-MPC/static/og-image.jpg">
+<meta property="og:image:width" content="1920">
+<meta property="og:image:height" content="1080">
+<meta property="og:image:alt" content="Title section: Imitation Learning of Avoidance Modes for Computationally Efficient Multimodal MPC">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sail-knu.github.io/Imitation-Learning-of-Avoidance-Modes-for-Computationally-Efficient-MM-MPC/static/og-image.jpg">
 <script>
 /* Applies a stored theme choice before first paint. No stored choice = follow the system. */
 (function () {
@@ -469,12 +479,12 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
  <div class="wrap">
   <div class="head reveal">
    <div class="eyebrow">At a glance</div>
-   <h2 id="glance-h">Faster on one core than the expert on sixteen, <span class="grad">at 93% of its success</span></h2>
+   <h2 id="glance-h">Faster on one thread than the expert on sixteen, <span class="grad">at 93% of its success</span></h2>
   </div>
   <div class="stats">
-   <div class="stat reveal"><div class="big grad-blue">18.6<span class="u">ms</span></div><div class="lbl"><b>per control period</b> on one core</div></div>
+   <div class="stat reveal"><div class="big grad-blue">18.6<span class="u">ms</span></div><div class="lbl"><b>per control period</b> on one thread</div></div>
    <div class="stat reveal d2"><div class="big grad-blue">&minus;48%</div><div class="lbl"><b>computation</b> vs. the expert's 35.5&nbsp;ms on 16 threads</div></div>
-   <div class="stat reveal d3"><div class="big grad-blue">93%</div><div class="lbl"><b>of the expert's successes</b>, 90 vs. 97 (<i class="v">p</i>&nbsp;=&nbsp;0.065)</div></div>
+   <div class="stat reveal d3"><div class="big grad-blue">93%</div><div class="lbl"><b>of the expert's successes</b>, 90 vs. 97</div></div>
   </div>
  </div>
 </section>
@@ -570,7 +580,7 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
   <div class="grid3 mt">
    <div class="card reveal"><span class="k">NODES</span><h3>One slot per obstacle</h3><p>Relative position, velocity and radius, plus the ego state. Permutation-equivariant.</p></div>
    <div class="card reveal d2"><span class="k">EDGES</span><h3>Gap at the encounter</h3><p>Current gap, gap at the encounter time, and closing rate.</p></div>
-   <div class="card reveal d3"><span class="k">SIZE</span><h3>Small and fast</h3><p>94,851 parameters, 0.4&nbsp;ms per forward pass on one core.</p></div>
+   <div class="card reveal d3"><span class="k">SIZE</span><h3>Small and fast</h3><p>94,851 parameters, 0.4&nbsp;ms per forward pass.</p></div>
   </div>
  </div>
 </section>
@@ -685,8 +695,8 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
  <div class="wrap">
   <div class="head reveal">
    <div class="eyebrow">Mixed traffic &middot; 100 seeds</div>
-   <h2 id="results-h">The expert's success within noise, <span class="blue">on one core</span></h2>
-   <p class="lede">Ten head-on, crossing, overtaken and static obstacles per seed. SideNet-MPC is seven runs behind the expert, not significant (<i class="v">p</i>&nbsp;=&nbsp;0.065), and ahead of every proposer without pair edges.</p>
+   <h2 id="results-h">Close to the expert's success, <span class="blue">on one thread</span></h2>
+   <p class="lede">Ten head-on, crossing, overtaken and static obstacles per seed. SideNet-MPC is seven runs behind the expert and ahead of every proposer without pair edges.</p>
   </div>
   <div class="grid2">
    <figure class="chart reveal" data-max="100" aria-labelledby="c1-h">
@@ -712,7 +722,7 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
     </tbody>
    </table>
   </div>
-  <p id="tbl-note" class="tbl-note">Arrival averages successful runs. Expert: 16 OCPs on 16 threads; learned rows: at most two on one core (Intel Core Ultra&nbsp;7 270K Plus), all timed in one session. McNemar <i class="v">p</i> vs. SideNet-MPC: expert 0.065, Slot-MLP 0.096, Slot-MLP-wide 0.118, Deep-set 0.052.</p>
+  <p id="tbl-note" class="tbl-note">Arrival averages successful runs. Expert: 16 OCPs on 16 threads; learned rows: at most two on one thread (Intel Core Ultra&nbsp;7 270K Plus, 24 cores, no simultaneous multithreading), all timed in one session.</p>
 
   <figure class="fig reveal mt2">
    <div class="plate"><img src="static/fig_mc_grid.png" alt="Two Monte Carlo seeds frozen two seconds before Slot-MLP collides, with the predicted paths of the expert, SideNet-MPC and Slot-MLP" loading="lazy"></div>
@@ -810,10 +820,10 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
 (function () {
  var rows = [
   { name: 'Expert', note: '16 threads', succ: 97, ms: 35.5 },
-  { name: 'SideNet-MPC', note: '1 core', succ: 90, ms: 18.6, acc: true },
-  { name: 'Slot-MLP', note: '1 core', succ: 82, ms: 19.0 },
-  { name: 'Slot-MLP-wide', note: '1 core', succ: 83, ms: 19.2 },
-  { name: 'Deep-set', note: '1 core', succ: 80, ms: 19.1 }
+  { name: 'SideNet-MPC', note: '1 thread', succ: 90, ms: 18.6, acc: true },
+  { name: 'Slot-MLP', note: '1 thread', succ: 82, ms: 19.0 },
+  { name: 'Slot-MLP-wide', note: '1 thread', succ: 83, ms: 19.2 },
+  { name: 'Deep-set', note: '1 thread', succ: 80, ms: 19.1 }
  ];
  var charts = document.querySelectorAll('.chart');
  var tip = document.createElement('div');
