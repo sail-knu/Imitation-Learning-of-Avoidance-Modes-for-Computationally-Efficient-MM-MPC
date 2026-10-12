@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Imitation Learning of Avoidance Modes for Computationally Efficient Multimodal MPC</title>
+<title>Imitation Learning of Avoidance Modes for Efficient Multimodal Model Predictive Control</title>
 <meta name="description" content="SideNet-MPC: a graph network proposes one avoidance mode, the previous decision is kept as a second candidate, and at most two TC-CBF constrained OCPs are solved per control period.">
 <meta name="theme-color" content="#ffffff">
-<meta property="og:title" content="Imitation Learning of Avoidance Modes for Computationally Efficient Multimodal MPC">
+<meta property="og:title" content="Imitation Learning of Avoidance Modes for Efficient Multimodal Model Predictive Control">
 <meta property="og:description" content="Changyu Lee, Byung-Kwan Lee, Kanghoon Yoon · A graph network learns the avoidance side of each obstacle from a multimodal MPC expert, cutting sixteen OCPs per control period to at most two.">
 <meta property="og:url" content="https://sail-knu.github.io/Imitation-Learning-of-Avoidance-Modes-for-Computationally-Efficient-MM-MPC/">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://sail-knu.github.io/Imitation-Learning-of-Avoidance-Modes-for-Computationally-Efficient-MM-MPC/static/og-image.jpg">
 <meta property="og:image:width" content="1920">
 <meta property="og:image:height" content="1080">
-<meta property="og:image:alt" content="Title section: Imitation Learning of Avoidance Modes for Computationally Efficient Multimodal MPC">
+<meta property="og:image:alt" content="Title section: Imitation Learning of Avoidance Modes for Efficient Multimodal MPC">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://sail-knu.github.io/Imitation-Learning-of-Avoidance-Modes-for-Computationally-Efficient-MM-MPC/static/og-image.jpg">
 <script>
@@ -162,6 +162,9 @@ sub,sup{font-size:.68em;line-height:0}
 .badge.plain{background:transparent;border-color:var(--line-2);color:var(--ink-2)}
 .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--blue)}
 .hero h1 .blue{display:block}
+.hero h1{font-size:clamp(30px,4.6vw,56px)}
+.hero h1 .l1{display:block;white-space:nowrap}
+@media (max-width:640px){.hero h1 .l1{white-space:normal}}
 .authors{margin-top:40px;font-size:21px;font-weight:600;letter-spacing:-.01em}
 .authors sup,.affil sup{font-size:.62em;position:relative;top:-.5em;vertical-align:baseline;margin-left:1px}
 .affil{margin-top:6px;color:var(--ink-2);font-size:16px}
@@ -453,7 +456,7 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
    <span class="badge plain">Model predictive control</span>
    <span class="badge plain">Graph neural networks</span>
   </div>
-  <h1 class="reveal d2">Imitation Learning of Avoidance Modes<span class="blue">for Computationally Efficient Multimodal MPC</span></h1>
+  <h1 class="reveal d2"><span class="l1">Imitation Learning of Avoidance Modes</span><span class="blue">for Efficient Multimodal MPC</span></h1>
   <p class="lede reveal d3">A graph network learns the avoidance side of each obstacle from a multimodal MPC expert, cutting sixteen OCPs per control period to at most two while the safety constraints stay in the optimization.</p>
   <p class="authors reveal d3">Changyu Lee<sup>1,&dagger;</sup>, Byung-Kwan Lee<sup>2</sup>, Kanghoon Yoon<sup>3</sup></p>
   <p class="affil reveal d3"><sup>1</sup>Kongju National University &nbsp;·&nbsp; <sup>2</sup>NVIDIA Research &nbsp;·&nbsp; <sup>3</sup>KAIST</p>
@@ -542,8 +545,8 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
    </div>
   </div>
   <figure class="fig reveal mt2">
-   <div class="plate"><div class="clip"><video muted playsinline preload="none" poster="static/poster_planning_step.jpg" aria-label="One planning step at the same state: the expert solves sixteen candidate trajectories, SideNet-MPC solves the network proposal and the previous mode, the proposal is accepted, and both execute the same maneuver"><source src="static/video_planning_step.mp4" type="video/mp4"></video></div></div>
-   <figcaption><b>One planning step.</b> At the same state, the expert solves all 16 modes and SideNet-MPC only the network proposal and the previous mode. The proposal is clearly cheaper than the previous mode, so the same selection rule switches both controllers to it: the expert (red) and SideNet-MPC (blue) execute the same maneuver; candidates in grey. SideNet-MPC drives Mixed traffic seed 441 and the expert is solved at the same state every period; click to replay.</figcaption>
+   <div class="plate"><img src="static/motv_snap.png" alt="One planning step of the same scene: the expert solves sixteen candidate trajectories and executes the minimum-cost one (red); SideNet-MPC solves two candidates and executes the same maneuver (blue)" loading="lazy"></div>
+   <figcaption><b>One planning step.</b> Candidate (gray) and executed trajectories of the expert (red) and SideNet-MPC (blue) in the same scene. The expert solves all 16 modes; SideNet-MPC solves only the network proposal and the previous mode, and executes the same maneuver.</figcaption>
   </figure>
  </div>
 </section>
@@ -699,9 +702,9 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
    <p class="lede">Ten head-on, crossing, overtaken and static obstacles per seed. SideNet-MPC is seven runs behind the expert and ahead of every proposer without pair edges.</p>
   </div>
   <div class="grid2">
-   <figure class="chart reveal" data-max="100" aria-labelledby="c1-h">
-    <h3 id="c1-h">Successful runs</h3><p class="unit">out of 100 seed-matched runs</p>
-    <div class="hb" data-ticks="0,25,50,75,100"></div>
+   <figure class="chart reveal" data-min="50" data-max="100" aria-labelledby="c1-h">
+    <h3 id="c1-h">Success relative to the expert</h3><p class="unit">successful runs as % of the expert's 97; axis starts at 50%</p>
+    <div class="hb" data-ticks="50,60,70,80,90,100"></div>
    </figure>
    <figure class="chart reveal d2" data-max="40" aria-labelledby="c2-h">
     <h3 id="c2-h">Computation time per control period</h3><p class="unit">mean, milliseconds</p>
@@ -712,17 +715,17 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
   <div class="tbl mt2 reveal">
    <table class="apple" aria-describedby="tbl-note">
     <caption class="sr">Closed-loop Monte Carlo results on mixed traffic, 100 seeds</caption>
-    <thead><tr><th scope="col">Controller</th><th scope="col">Parameters</th><th scope="col">Success</th><th scope="col">Collision</th><th scope="col">Timeout</th><th scope="col">Arrival [s]</th><th scope="col">Time [ms]</th></tr></thead>
+    <thead><tr><th scope="col">Controller</th><th scope="col">Success</th><th scope="col">Rel. SR</th><th scope="col">Threads</th><th scope="col">Time [ms]</th></tr></thead>
     <tbody>
-     <tr><td>Expert (16 OCPs)</td><td>&mdash;</td><td>97</td><td>3</td><td>0</td><td>37.3 &plusmn; 9.1</td><td>35.5</td></tr>
-     <tr class="hl"><td>SideNet-MPC</td><td>94,851</td><td>90</td><td>10</td><td>0</td><td>35.5 &plusmn; 7.4</td><td>18.6</td></tr>
-     <tr><td>Slot-MLP</td><td>9,217</td><td>82</td><td>18</td><td>0</td><td>35.7 &plusmn; 8.4</td><td>19.0</td></tr>
-     <tr><td>Slot-MLP-wide</td><td>95,017</td><td>83</td><td>17</td><td>0</td><td>35.5 &plusmn; 8.4</td><td>19.2</td></tr>
-     <tr><td>Deep-set</td><td>17,473</td><td>80</td><td>20</td><td>0</td><td>34.7 &plusmn; 5.9</td><td>19.1</td></tr>
+     <tr><td>Expert</td><td>97</td><td>1.00</td><td>16</td><td>35.5</td></tr>
+     <tr class="hl"><td>SideNet-MPC</td><td>90</td><td>0.93</td><td>1</td><td>18.6</td></tr>
+     <tr><td>Slot-MLP</td><td>82</td><td>0.85</td><td>1</td><td>19.0</td></tr>
+     <tr><td>Slot-MLP-wide</td><td>83</td><td>0.86</td><td>1</td><td>19.2</td></tr>
+     <tr><td>Deep-set</td><td>80</td><td>0.82</td><td>1</td><td>19.1</td></tr>
     </tbody>
    </table>
   </div>
-  <p id="tbl-note" class="tbl-note">Arrival averages successful runs. Expert: 16 OCPs on 16 threads; learned rows: at most two on one thread (Intel Core Ultra&nbsp;7 270K Plus, 24 cores, no simultaneous multithreading), all timed in one session.</p>
+  <p id="tbl-note" class="tbl-note">100 seeds, identical across controllers. Rel. SR is the success count divided by the expert's. Time is the mean computation time per control period, measured with the listed number of CPU threads in one session (Intel Core Ultra&nbsp;7 270K Plus, 24 cores, no simultaneous multithreading).</p>
 
   <figure class="fig reveal mt2">
    <div class="plate"><img src="static/fig_mc_grid.png" alt="Two Monte Carlo seeds frozen two seconds before Slot-MLP collides, with the predicted paths of the expert, SideNet-MPC and Slot-MLP" loading="lazy"></div>
@@ -788,22 +791,13 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
    <div class="eyebrow">Conclusion</div>
    <h2 id="conc-h">A learned mode decision without a learned control input</h2>
   </div>
-  <div class="grid2">
-   <div class="card reveal">
-    <h3>What the study shows</h3>
-    <ul class="clean check mt">
-     <li>Two OCPs instead of sixteen, at 93% of the expert's success.</li>
-     <li>Every executed input comes from a TC-CBF constrained OCP.</li>
-     <li>Pair-gap edges, not extra capacity, carry the side decision.</li>
-    </ul>
-   </div>
-   <div class="card reveal d2">
-    <h3>Next steps</h3>
-    <ul class="clean mt">
-     <li>Extend the graph from the branch obstacles to the full selected set.</li>
-     <li>Validate the controller on embedded hardware.</li>
-    </ul>
-   </div>
+  <div class="card reveal">
+   <h3>What the study shows</h3>
+   <ul class="clean check mt">
+    <li>Two OCPs instead of sixteen, at 93% of the expert's success.</li>
+    <li>Every executed input comes from a TC-CBF constrained OCP.</li>
+    <li>Pair-gap edges, not extra capacity, carry the side decision.</li>
+   </ul>
   </div>
  </div>
 </section>
@@ -825,6 +819,7 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
   { name: 'Slot-MLP-wide', note: '1 thread', succ: 83, ms: 19.2 },
   { name: 'Deep-set', note: '1 thread', succ: 80, ms: 19.1 }
  ];
+ rows.forEach(function (r) { r.rel = 100 * r.succ / rows[0].succ; });
  var charts = document.querySelectorAll('.chart');
  var tip = document.createElement('div');
  tip.className = 'tip';
@@ -833,11 +828,13 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
  tip.appendChild(tipVal); tip.appendChild(tipLab);
 
  charts.forEach(function (chart, ci) {
+  var min = parseFloat(chart.getAttribute('data-min') || '0');
   var max = parseFloat(chart.getAttribute('data-max'));
   var hb = chart.querySelector('.hb');
-  var key = ci === 0 ? 'succ' : 'ms';
-  var fmt = function (v) { return ci === 0 ? String(v) : v.toFixed(1); };
-  var at = function (t) { return 'calc((100% - var(--room)) * ' + (t / max).toFixed(4) + ')'; };
+  var key = ci === 0 ? 'rel' : 'ms';
+  var fmt = function (v) { return ci === 0 ? v.toFixed(0) + '%' : v.toFixed(1); };
+  var frac = function (v) { return (v - min) / (max - min); };
+  var at = function (t) { return 'calc((100% - var(--room)) * ' + frac(t).toFixed(4) + ')'; };
   var plot = document.createElement('div');
   plot.className = 'hb-plot';
   plot.style.gridRow = '1 / span ' + rows.length;
@@ -861,11 +858,11 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
    track.className = 'hb-track';
    track.style.gridRow = String(i + 1);
    track.tabIndex = 0;
-   var label = r.name + ': ' + fmt(r[key]) + (ci === 0 ? ' of 100 runs successful' : ' ms per period, ' + r.note);
+   var label = r.name + ': ' + (ci === 0 ? fmt(r.rel) + ' of the expert\'s successes (' + r.succ + ' of 100 runs)' : fmt(r.ms) + ' ms per period, ' + r.note);
    track.setAttribute('aria-label', label);
    var bar = document.createElement('span');
    bar.className = 'hb-bar';
-   bar.style.setProperty('--v', (100 * r[key] / max).toFixed(2));
+   bar.style.setProperty('--v', (100 * frac(r[key])).toFixed(2));
    var val = document.createElement('span');
    val.className = 'hb-val';
    val.textContent = fmt(r[key]) + (ci === 1 ? ' ms' : '');
@@ -873,8 +870,8 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
    row.appendChild(lab); row.appendChild(track);
    hb.appendChild(row);
    function show(e) {
-    tipVal.textContent = fmt(r[key]) + (ci === 0 ? ' / 100' : ' ms');
-    tipLab.textContent = r.name + (ci === 0 ? ' · successful runs' : ' · ' + r.note);
+    tipVal.textContent = fmt(r[key]) + (ci === 0 ? '' : ' ms');
+    tipLab.textContent = r.name + (ci === 0 ? ' · ' + r.succ + ' of 100 runs' : ' · ' + r.note);
     chart.appendChild(tip);
     var cb = chart.getBoundingClientRect(), tb = track.getBoundingClientRect();
     var x = e && e.clientX ? e.clientX - cb.left + 12 : tb.left - cb.left + bar.offsetWidth + 12;
@@ -895,7 +892,7 @@ footer .wrap{display:flex;flex-direction:column;gap:6px}
   ticks.forEach(function (t) {
    var s = document.createElement('span');
    s.style.left = at(t);
-   s.textContent = String(t);
+   s.textContent = ci === 0 ? t + '%' : String(t);
    axis.appendChild(s);
   });
   hb.appendChild(axis);
